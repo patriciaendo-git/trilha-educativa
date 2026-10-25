@@ -11,17 +11,17 @@
 :root{
   --bg:#FFFFFF; --fg:#1A1718; --muted:#6A6365; --line:#E6DEDE; --card:#F6F2F2;
   --red:#F72120; --redText:#D11615; --graf:#282425; --onGraf:#FFFFFF;
-  --barGeral:#282425; --barProj:#F72120; --ok:#1F7A4D; --okBg:#E3F2EA; --wait:#6A6365; --waitBg:#EFEAEA;
+  --barGeral:#282425; --dash:#D3C8C9; --barProj:#F72120; --ok:#1F7A4D; --okBg:#E3F2EA; --wait:#6A6365; --waitBg:#EFEAEA;
   --font:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
   --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
-  --barGeral:#CFC7C9; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}}
+  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
   --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
-  --barGeral:#CFC7C9; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}
+  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6}
@@ -69,6 +69,17 @@ h2{font-size:22px;font-weight:700}
 .gantt .bar{align-self:center;height:16px;border-radius:4px;margin:0 3px}
 .bar.g{background:var(--barGeral)}.bar.p{background:var(--barProj)}
 
+/* apoio: linha dentro do card do material */
+.apoio-row{grid-column:2/-1;display:flex;justify-content:space-between;align-items:center;gap:12px 18px;flex-wrap:wrap;margin-top:6px;padding-top:12px;border-top:1px dashed var(--dash)}
+.ab{display:flex;gap:10px;align-items:flex-start;min-width:0;flex:1 1 260px}
+.ab .ico{color:var(--redText);font-weight:700;line-height:1.4}
+.ab b{display:block;font-size:14px;font-weight:700}
+.ab .ad{display:block;font-size:13px;color:var(--muted)}
+.act.sm{gap:6px}
+.act.sm .btn{font-size:12px;padding:5px 11px}
+.meta2{font-size:12px;color:var(--muted);white-space:nowrap}
+.msg:empty{display:none}
+
 /* grupos */
 .grupos{display:grid;gap:36px}
 .gh{display:grid;gap:2px;margin-bottom:12px;padding-left:12px;border-left:3px solid var(--red)}
@@ -87,7 +98,7 @@ h2{font-size:22px;font-weight:700}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .chip{font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
 .chip.proj{border-color:var(--red);color:var(--redText)}
-.act{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.act{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:150px}
 .st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .st.ok{background:var(--okBg);color:var(--ok)}
 .st.wait{background:var(--waitBg);color:var(--wait)}
@@ -107,6 +118,8 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display
   .logo{width:60px;height:60px}.logo img{width:46px}
   .mat{grid-template-columns:40px 1fr}
   .act{grid-column:1/-1;align-items:flex-start}
+  .apoio-row{grid-column:1/-1}
+  .act.sm{align-items:flex-start}
   .btns{justify-content:flex-start}
 }
 </style>
@@ -128,30 +141,50 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display
     <h2 id="mats">Materiais</h2>
     <p class="sub">Os PDFs ficam disponíveis aqui assim que cada material é aprovado pela orientação.</p>
     <div class="grupos" id="lista"></div>
-    <p class="note">Os materiais do projeto (2, 3 e 7) usam a identidade visual do Isso é normal?. Os gerais usam exemplos do hansen.ai, outro projeto do dotLAB.</p>
+    <p class="note">Os materiais do projeto usam a identidade visual do Isso é normal?. Os gerais usam exemplos do hansen.ai, outro projeto do dotLAB.</p>
   </section>
 
   <footer><span>dotLAB · Grupo de Pesquisa em Transformação Digital · UPE</span><span>dotlabbrazil.com.br</span></footer>
 </div>
 
 <script>
-/* Para publicar um material aprovado: preencha pdf, pag e ver (ex.: "Versão 1.0 · outubro de 2026"). */
+/* Para publicar um material aprovado: preencha pdf (nome fixo, sem versão), pag e ver (ex.: "Versão 1.0 · outubro de 2026"). */
 const MATS = [
-  {n:"1", t:"Boas-vindas ao dotLAB", d:"Quem somos, como funciona a orientação e o que esperamos de você.", tipo:"g", pdf:"pdfs/01-boas-vindas-ao-dotlab-v1.0.pdf", pag:5, ver:"Versão 1.0 · outubro de 2026"},
-  {n:"2", t:"Documento de estudo: o problema e a justificativa", d:"A endometriose, o atraso no diagnóstico e por que o jogo existe.", tipo:"p", st:"rev"},
-  {n:"3", t:"O jogo por dentro", d:"O projeto, as peças do sistema e o formato de cada registro.", tipo:"p", st:"rev"},
+  {n:"1", t:"Boas-vindas ao dotLAB", d:"Quem somos, como funciona a orientação e o que esperamos de você.", tipo:"g", pdf:"pdfs/boas-vindas-ao-dotlab.pdf", pag:5, ver:"Versão 1.1 · outubro de 2026"},
+  {n:"2", t:"Documento de estudo: o problema e a justificativa", d:"A endometriose, o atraso no diagnóstico e por que o jogo existe.", tipo:"p", pdf:"pdfs/documento-de-estudo.pdf", pag:8, ver:"Versão 1.1 · outubro de 2026"},
+  {n:"2-apoio", num:"2", apoio:true, t:"Apoio às atividades", d:"Acompanha o Documento de estudo: o problema e a justificativa. Orientações para fazer as atividades, sem as respostas.", tipo:"p", pdf:"pdfs/documento-de-estudo-apoio.pdf", pag:6, ver:"Versão 1.0 · outubro de 2026"},
+  {n:"3", t:"O jogo por dentro", d:"A arquitetura do jogo e o formato dos dados que ele gera.", tipo:"p", pdf:"pdfs/o-jogo-por-dentro.pdf", pag:7, ver:"Versão 1.0 · outubro de 2026"},
+  {n:"3-apoio", num:"3", apoio:true, t:"Apoio às atividades", d:"Acompanha o material O jogo por dentro. Orientações para fazer as atividades, sem as respostas.", tipo:"p", pdf:"pdfs/o-jogo-por-dentro-apoio.pdf", pag:3, ver:"Versão 1.0 · outubro de 2026"},
   {n:"4", t:"Do problema à pergunta de pesquisa", d:"Como sair de um tema amplo e chegar a uma pergunta que a pesquisa consegue responder.", tipo:"g", st:"rev"},
   {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como escolher e como ler um artigo científico.", tipo:"g", st:"prep"},
   {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
-  {n:"7", t:"Roteiro de atividades", d:"Cinco etapas de análise com a base de treino: conhecer a base, fazer perguntas, conferir a qualidade, criar gráficos e interpretar os resultados.", tipo:"p", st:"rev"},
-  {n:"8", t:"Da análise ao resumo científico", d:"Como transformar os resultados do roteiro de atividades num resumo científico.", tipo:"g", st:"prep"},
-  {n:"9", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"}
+  {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.0 · outubro de 2026"},
+  {n:"8", t:"Conhecer os dados", d:"Descrever a base: tamanho, tipos de evento, campos e valores ausentes.", tipo:"p", st:"prep"},
+  {n:"9", t:"Perguntas aos dados", d:"Responder perguntas com contagens, médias e taxas, em pandas.", tipo:"p", st:"prep"},
+  {n:"10", t:"Qualidade dos dados", d:"Encontrar e tratar problemas na base antes de concluir algo.", tipo:"p", st:"prep"},
+  {n:"11", t:"Gráficos", d:"Escolher e construir a figura certa para cada resultado.", tipo:"p", st:"prep"},
+  {n:"12", t:"Interpretar os resultados", d:"Transformar números em conclusões e reconhecer as limitações.", tipo:"p", st:"prep"},
+  {n:"13", t:"Da análise ao resumo científico", d:"Como transformar os resultados da análise num resumo científico.", tipo:"g", st:"prep"},
+  {n:"14", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"}
 ];
 const GRUPOS = [
-  {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","3"]},
-  {t:"Para pesquisar", d:"Da pergunta de pesquisa à análise dos dados, passando pela leitura de artigos e pela ética.", ns:["4","5","6","7"]},
-  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["8","9"]}
+  {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","2-apoio","3","3-apoio"]},
+  {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas.", ns:["4","5","6"]},
+  {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", ns:["7","8","9","10","11","12"]},
+  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["13","14"]}
 ];
+/* ações de um material: PDF disponível ou situação */
+function preencher(box, m){
+  if(m.pdf){
+    const v=(m.ver||"").match(/Versão\s*([\d.]+)/);
+    box.innerHTML=`<div class="btns"><a class="btn sec" target="_blank" rel="noopener">Abrir</a><a class="btn pri dl">Baixar PDF</a></div><span class="meta2"></span>`;
+    box.querySelector(".meta2").textContent=`PDF · ${m.pag} páginas`+(v?` · versão ${v[1]}`:"");
+    box.querySelector("a").href=m.pdf;
+    const dl=box.querySelector("a.dl"); dl.href=m.pdf; dl.setAttribute("download", m.pdf.split("/").pop());
+  } else {
+    box.innerHTML=`<span class="st wait">${m.st==="rev"?"Em revisão":"Em preparação"}</span>`;
+  }
+}
 /* lista de materiais, por momento da trilha */
 const box=document.getElementById("lista");
 GRUPOS.forEach(gr=>{
@@ -160,21 +193,20 @@ GRUPOS.forEach(gr=>{
   sec.querySelector("h3").textContent=gr.t; sec.querySelector(".gh p").textContent=gr.d;
   box.appendChild(sec);
   const ul=sec.querySelector("ul");
-  gr.ns.map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
+  gr.ns.filter(n=>!n.endsWith("-apoio")).map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
   const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");
   li.innerHTML=`<div class="num"></div><div class="body"><h3></h3><p></p><div class="meta"><span class="chip ${m.tipo==="p"?"proj":""}"></span></div></div><div class="act"></div>`;
   li.querySelector(".num").textContent=m.n;
   li.querySelector("h3").textContent=m.t;
   li.querySelector("p").textContent=m.d;
   li.querySelector(".chip").textContent=m.tipo==="p"?"Do projeto":"Geral do dotLAB";
-  const act=li.querySelector(".act");
-  if(m.pdf){
-    act.innerHTML=`<span class="st ok">Disponível · PDF, ${m.pag} páginas</span><span class="ver"></span><div class="btns"><a class="btn sec" target="_blank" rel="noopener">Abrir</a><a class="btn pri dl">Baixar PDF</a></div>`;
-    act.querySelector(".ver").textContent=m.ver||"";
-    act.querySelector("a").href=m.pdf;
-    const dl=act.querySelector("a.dl"); dl.href=m.pdf; dl.setAttribute("download", m.pdf.split("/").pop());
-  } else {
-    act.innerHTML=`<span class="st wait">${m.st==="rev"?"Em revisão":"Em preparação"}</span>`;
+  preencher(li.querySelector(".act"), m);
+  const ap=MATS.find(x=>x.n===m.n+"-apoio");
+  if(ap){
+    const row=document.createElement("div"); row.className="apoio-row";
+    row.innerHTML=`<div class="ab"><span class="ico" aria-hidden="true">↳</span><div><b>Apoio às atividades</b><span class="ad">Orientações para fazer as atividades, sem as respostas.</span></div></div><div class="act sm"></div>`;
+    preencher(row.querySelector(".act"), ap);
+    li.appendChild(row);
   }
   ul.appendChild(li);
   });
