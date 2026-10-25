@@ -1,6 +1,6 @@
-# Trilha de introdução à pesquisa · Isso é normal?
+# Trilha de introdução à pesquisa · dotLAB
 
-Página com os materiais da trilha do dotLAB para as estudantes do projeto Isso é normal?.
+Página com os materiais da trilha do dotLAB.
 
 ## Como publicar um material aprovado
 
