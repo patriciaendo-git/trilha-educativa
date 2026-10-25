@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trilha Isso é normal?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: uma coluna de leitura; cronograma em grade de 15 semanas; lista de materiais na ordem da trilha */
+:root{
+  --bg:#FFFFFF; --fg:#1A1718; --muted:#6A6365; --line:#E6DEDE; --card:#F6F2F2;
+  --red:#F72120; --redText:#D11615; --graf:#282425; --onGraf:#FFFFFF;
+  --barGeral:#282425; --barProj:#F72120; --ok:#1F7A4D; --okBg:#E3F2EA; --wait:#6A6365; --waitBg:#EFEAEA;
+  --font:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
+  --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
+  --barGeral:#CFC7C9; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
+  --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
+  --barGeral:#CFC7C9; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.2}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--redText)}
+
+/* topo */
+header.top{display:flex;gap:20px;align-items:center;padding-bottom:28px;border-bottom:2px solid var(--red)}
+.logo{flex:none;width:76px;height:76px;background:#fff;border-radius:10px;display:grid;place-items:center;border:1px solid var(--line)}
+.logo img{width:58px;height:auto}
+.top .txt{min-width:0;display:grid;gap:6px}
+h1{font-size:clamp(26px,4.6vw,38px);font-weight:800;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--redText)}
+.lede{color:var(--muted);max-width:62ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:20px;font-size:14px}
+.facts div{display:flex;flex-direction:column}
+.facts dt{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:0;font-weight:600}
+
+section{margin-top:44px}
+section > h2{margin-bottom:6px}
+.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sh .n{font-size:28px;font-weight:800;color:var(--redText);font-variant-numeric:tabular-nums}
+h2{font-size:22px;font-weight:700}
+.sub{color:var(--muted);max-width:66ch;margin-bottom:18px}
+
+/* legenda */
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);margin-bottom:12px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:18px;height:10px;border-radius:3px;display:inline-block}
+.sw.g{background:var(--barGeral)}.sw.p{background:var(--barProj)}
+
+/* cronograma */
+.gscroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.gantt{min-width:760px;display:grid;grid-template-columns:230px repeat(15,1fr);font-size:13px}
+.gantt .h{font-size:11px;font-weight:600;color:var(--muted);text-align:center;padding:8px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.gantt .h.lab{text-align:left;padding-left:12px}
+.gantt .ph{grid-row:1;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:8px 10px;color:var(--fg);background:var(--card);border-bottom:1px solid var(--line);border-left:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gantt .lbl{grid-column:1;padding:7px 12px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline;min-width:0}
+.gantt .lbl b{font-weight:700;color:var(--redText);flex:none;width:30px;font-variant-numeric:tabular-nums}
+.gantt .lbl span{min-width:0}
+.gantt .cell{border-bottom:1px solid var(--line);border-left:1px dashed var(--line)}
+.gantt .bar{align-self:center;height:16px;border-radius:4px;margin:0 3px}
+.bar.g{background:var(--barGeral)}.bar.p{background:var(--barProj)}
+
+/* grupos */
+.grupos{display:grid;gap:36px}
+.gh{display:grid;gap:2px;margin-bottom:12px;padding-left:12px;border-left:3px solid var(--red)}
+.gh h3{font-size:17px;font-weight:700}
+.gh p{font-size:14px;color:var(--muted)}
+.ver{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* materiais */
+.mats{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.mat{display:grid;grid-template-columns:52px 1fr auto;gap:6px 18px;align-items:center;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.mat.on{background:var(--card);border-color:transparent}
+.mat .num{font-size:22px;font-weight:800;color:var(--redText);font-variant-numeric:tabular-nums}
+.mat .body{min-width:0;display:grid;gap:4px}
+.mat h3{font-size:16px;font-weight:700}
+.mat p{font-size:14px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.chip.proj{border-color:var(--red);color:var(--redText)}
+.act{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.st.ok{background:var(--okBg);color:var(--ok)}
+.st.wait{background:var(--waitBg);color:var(--wait)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.pri{background:var(--red);color:#fff;border:1px solid var(--red)}
+.btn.sec{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
+.btn:hover{filter:brightness(1.05)}
+.msg{font-size:12px;color:var(--muted);min-height:1em}
+
+.note{margin-top:14px;font-size:13px;color:var(--muted)}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+
+@media (max-width:620px){
+  header.top{align-items:flex-start}
+  .logo{width:60px;height:60px}.logo img{width:46px}
+  .mat{grid-template-columns:40px 1fr}
+  .act{grid-column:1/-1;align-items:flex-start}
+  .btns{justify-content:flex-start}
+}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><img src="logo.png" alt="dotLAB"></div>
+    <div class="txt">
+      <div class="eyebrow">Material de introdução à pesquisa</div>
+      <h1>Sua trilha no <em>Isso é normal?</em></h1>
+      <p class="lede">Os materiais de introdução à pesquisa do projeto, na ordem sugerida de leitura. O ritmo de cada estudante é combinado com a orientadora.</p>
+    </div>
+  </header>
+
+  <dl class="facts">
+    <div><dt>Orientação</dt><dd>Profa. Patricia Takako Endo</dd></div>
+    <div><dt>Reuniões</dt><dd>Quintas pela manhã, no dotLAB</dd></div>
+  </dl>
+
+  <section aria-labelledby="mats">
+    <h2 id="mats">Materiais</h2>
+    <p class="sub">Os PDFs ficam disponíveis aqui assim que cada material é aprovado pela orientação.</p>
+    <div class="grupos" id="lista"></div>
+    <p class="note">Os materiais do projeto (2, 3 e 7) usam a identidade visual do Isso é normal?. Os gerais usam exemplos do hansen.ai, outro projeto do dotLAB.</p>
+  </section>
+
+  <footer><span>dotLAB · Grupo de Pesquisa em Transformação Digital · UPE</span><span>dotlabbrazil.com.br</span></footer>
+</div>
+
+<script>
+/* Para publicar um material aprovado: preencha pdf, pag e ver (ex.: "Versão 1.0 · outubro de 2026"). */
+const MATS = [
+  {n:"1", t:"Boas-vindas ao dotLAB", d:"Quem somos, como funciona a orientação e o que esperamos de você.", tipo:"g", pdf:"pdfs/01-boas-vindas-ao-dotlab-v1.0.pdf", pag:5, ver:"Versão 1.0 · outubro de 2026"},
+  {n:"2", t:"Documento de estudo: o problema e a justificativa", d:"A endometriose, o atraso no diagnóstico e por que o jogo existe.", tipo:"p", st:"rev"},
+  {n:"3", t:"O jogo por dentro", d:"O projeto, as peças do sistema e o formato de cada registro.", tipo:"p", st:"rev"},
+  {n:"4", t:"Do problema à pergunta de pesquisa", d:"Como sair de um tema amplo e chegar a uma pergunta que a pesquisa consegue responder.", tipo:"g", st:"rev"},
+  {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como escolher e como ler um artigo científico.", tipo:"g", st:"prep"},
+  {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
+  {n:"7", t:"Roteiro de atividades", d:"Cinco etapas de análise com a base de treino: conhecer a base, fazer perguntas, conferir a qualidade, criar gráficos e interpretar os resultados.", tipo:"p", st:"rev"},
+  {n:"8", t:"Da análise ao resumo científico", d:"Como transformar os resultados do roteiro de atividades num resumo científico.", tipo:"g", st:"prep"},
+  {n:"9", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"}
+];
+const GRUPOS = [
+  {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","3"]},
+  {t:"Para pesquisar", d:"Da pergunta de pesquisa à análise dos dados, passando pela leitura de artigos e pela ética.", ns:["4","5","6","7"]},
+  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["8","9"]}
+];
+/* lista de materiais, por momento da trilha */
+const box=document.getElementById("lista");
+GRUPOS.forEach(gr=>{
+  const sec=document.createElement("div"); sec.className="grupo";
+  sec.innerHTML=`<div class="gh"><h3></h3><p></p></div><ul class="mats"></ul>`;
+  sec.querySelector("h3").textContent=gr.t; sec.querySelector(".gh p").textContent=gr.d;
+  box.appendChild(sec);
+  const ul=sec.querySelector("ul");
+  gr.ns.map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
+  const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");
+  li.innerHTML=`<div class="num"></div><div class="body"><h3></h3><p></p><div class="meta"><span class="chip ${m.tipo==="p"?"proj":""}"></span></div></div><div class="act"></div>`;
+  li.querySelector(".num").textContent=m.n;
+  li.querySelector("h3").textContent=m.t;
+  li.querySelector("p").textContent=m.d;
+  li.querySelector(".chip").textContent=m.tipo==="p"?"Do projeto":"Geral do dotLAB";
+  const act=li.querySelector(".act");
+  if(m.pdf){
+    act.innerHTML=`<span class="st ok">Disponível · PDF, ${m.pag} páginas</span><span class="ver"></span><div class="btns"><a class="btn sec" target="_blank" rel="noopener">Abrir</a><a class="btn pri dl">Baixar PDF</a></div>`;
+    act.querySelector(".ver").textContent=m.ver||"";
+    act.querySelector("a").href=m.pdf;
+    const dl=act.querySelector("a.dl"); dl.href=m.pdf; dl.setAttribute("download", m.pdf.split("/").pop());
+  } else {
+    act.innerHTML=`<span class="st wait">${m.st==="rev"?"Em revisão":"Em preparação"}</span>`;
+  }
+  ul.appendChild(li);
+  });
+});
+
+</script>
+</body>
+</html>
