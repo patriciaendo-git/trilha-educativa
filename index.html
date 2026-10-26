@@ -82,6 +82,13 @@ h2{font-size:22px;font-weight:700}
 
 /* grupos */
 .grupos{display:grid;gap:36px}
+.rec{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:0 0 12px;padding:12px 16px;border:1.5px dashed var(--dash);border-radius:10px}
+.rec .rb{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 300px}
+.rec .ico{flex:none;width:40px;height:40px;border-radius:8px;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.rec .eb{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rec b{display:block;font-size:15px}
+.rec .rd{display:block;font-size:13px;color:var(--muted)}
+.rec .act .btn.pri{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 .gh{display:grid;gap:2px;margin-bottom:12px;padding-left:12px;border-left:3px solid var(--red)}
 .gh h3{font-size:17px;font-weight:700}
 .gh p{font-size:14px;color:var(--muted)}
@@ -158,8 +165,9 @@ const MATS = [
   {n:"4", t:"Do problema à pergunta de pesquisa", d:"Como sair de um tema amplo e chegar a uma pergunta que a pesquisa consegue responder.", tipo:"g", st:"rev"},
   {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como escolher e como ler um artigo científico.", tipo:"g", st:"prep"},
   {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
-  {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.0 · outubro de 2026"},
-  {n:"8", t:"Conhecer os dados", d:"Descrever a base: tamanho, tipos de evento, campos e valores ausentes.", tipo:"p", st:"prep"},
+  {n:"base", t:"Base de treino", d:"Dados simulados no formato do jogo, usados em todos os materiais deste bloco.", tipo:"p", pdf:"dados/isso-e-normal-base-de-treino.jsonl", info:"JSONL · 419 registros · setembro de 2026"},
+  {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.1 · outubro de 2026"},
+  {n:"8", t:"Conhecer os dados", d:"Descrever a base: tamanho, tipos de evento, campos e valores ausentes.", tipo:"p", pdf:"pdfs/conhecer-os-dados.pdf", pag:5, ver:"Versão 1.0 · outubro de 2026"},
   {n:"9", t:"Perguntas aos dados", d:"Responder perguntas com contagens, médias e taxas, em pandas.", tipo:"p", st:"prep"},
   {n:"10", t:"Qualidade dos dados", d:"Encontrar e tratar problemas na base antes de concluir algo.", tipo:"p", st:"prep"},
   {n:"11", t:"Gráficos", d:"Escolher e construir a figura certa para cada resultado.", tipo:"p", st:"prep"},
@@ -170,7 +178,7 @@ const MATS = [
 const GRUPOS = [
   {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","2-apoio","3","3-apoio"]},
   {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas.", ns:["4","5","6"]},
-  {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", ns:["7","8","9","10","11","12"]},
+  {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", rec:"base", ns:["7","8","9","10","11","12"]},
   {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["13","14"]}
 ];
 /* ações de um material: PDF disponível ou situação */
@@ -178,7 +186,8 @@ function preencher(box, m){
   if(m.pdf){
     const v=(m.ver||"").match(/Versão\s*([\d.]+)/);
     box.innerHTML=`<div class="btns"><a class="btn sec" target="_blank" rel="noopener">Abrir</a><a class="btn pri dl">Baixar PDF</a></div><span class="meta2"></span>`;
-    box.querySelector(".meta2").textContent=`PDF · ${m.pag} páginas`+(v?` · versão ${v[1]}`:"");
+    box.querySelector(".meta2").textContent=m.info||(`PDF · ${m.pag} páginas`+(v?` · versão ${v[1]}`:""));
+    if(m.info) box.querySelector(".btn.pri").textContent="Baixar arquivo";
     box.querySelector("a").href=m.pdf;
     const dl=box.querySelector("a.dl"); dl.href=m.pdf; dl.setAttribute("download", m.pdf.split("/").pop());
   } else {
@@ -193,6 +202,13 @@ GRUPOS.forEach(gr=>{
   sec.querySelector("h3").textContent=gr.t; sec.querySelector(".gh p").textContent=gr.d;
   box.appendChild(sec);
   const ul=sec.querySelector("ul");
+  if(gr.rec){
+    const r=MATS.find(m=>m.n===gr.rec), rc=document.createElement("div"); rc.className="rec";
+    rc.innerHTML=`<div class="rb"><span class="ico" aria-hidden="true">{ }</span><div><b></b><span class="rd"></span></div></div><div class="act sm"></div>`;
+    rc.querySelector("b").textContent=r.t; rc.querySelector(".rd").textContent=r.d;
+    preencher(rc.querySelector(".act"), r);
+    sec.insertBefore(rc, ul);
+  }
   gr.ns.filter(n=>!n.endsWith("-apoio")).map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
   const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");
   li.innerHTML=`<div class="num"></div><div class="body"><h3></h3><p></p><div class="meta"><span class="chip ${m.tipo==="p"?"proj":""}"></span></div></div><div class="act"></div>`;
