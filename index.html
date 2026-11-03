@@ -163,7 +163,8 @@ const MATS = [
   {n:"3", t:"O jogo por dentro", d:"A arquitetura do jogo e o formato dos dados que ele gera.", tipo:"p", pdf:"pdfs/o-jogo-por-dentro.pdf", pag:7, ver:"Versão 1.0 · outubro de 2026"},
   {n:"3-apoio", num:"3", apoio:true, t:"Apoio às atividades", d:"Acompanha o material O jogo por dentro. Orientações para fazer as atividades, sem as respostas.", tipo:"p", pdf:"pdfs/o-jogo-por-dentro-apoio.pdf", pag:3, ver:"Versão 1.0 · outubro de 2026"},
   {n:"4", t:"Do problema à pergunta de pesquisa", d:"Como sair de um tema amplo e chegar a uma pergunta que a pesquisa consegue responder.", tipo:"g", st:"rev"},
-  {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como escolher e como ler um artigo científico.", tipo:"g", st:"prep"},
+  {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como montar a busca, a literatura cinzenta e a leitura crítica de artigos.", tipo:"g", pdf:"pdfs/como-buscar-e-ler-artigos.pdf", pag:10, ver:"Versão 1.0 · novembro de 2026"},
+  {n:"5-apoio", num:"5", apoio:true, t:"Apoio às atividades", d:"Acompanha o material Como buscar e ler artigos. Orientações para fazer as atividades, sem as respostas.", tipo:"g", pdf:"pdfs/como-buscar-e-ler-artigos-apoio.pdf", pag:8, ver:"Versão 1.0 · novembro de 2026"},
   {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
   {n:"base", t:"Base de treino", d:"Dados simulados no formato do jogo, usados em todos os materiais deste bloco.", tipo:"p", pdf:"dados/isso-e-normal-base-de-treino.jsonl", info:"JSONL · 419 registros · setembro de 2026"},
   {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.1 · outubro de 2026"},
@@ -177,7 +178,7 @@ const MATS = [
 ];
 const GRUPOS = [
   {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","2-apoio","3","3-apoio"]},
-  {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas.", ns:["4","5","6"]},
+  {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas.", ns:["4","5","5-apoio","6"]},
   {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", rec:"base", ns:["7","8","9","10","11","12"]},
   {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["13","14"]}
 ];
