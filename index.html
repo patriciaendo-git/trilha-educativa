@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -7,23 +7,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 <style>
-/* Layout: uma coluna de leitura; cronograma em grade de 15 semanas; lista de materiais na ordem da trilha */
+/* Layout: uma coluna de leitura; lista de materiais na ordem da trilha */
 :root{
   --bg:#FFFFFF; --fg:#1A1718; --muted:#6A6365; --line:#E6DEDE; --card:#F6F2F2;
-  --red:#F72120; --redText:#D11615; --graf:#282425; --onGraf:#FFFFFF;
-  --barGeral:#282425; --dash:#D3C8C9; --barProj:#F72120; --ok:#1F7A4D; --okBg:#E3F2EA; --wait:#6A6365; --waitBg:#EFEAEA;
+  --red:#D11615; --redText:#D11615; --graf:#282425; --onGraf:#FFFFFF;
+  --barGeral:#282425; --dash:#D3C8C9; --barProj:#D11615; --ok:#1F7A4D; --okBg:#E3F2EA; --wait:#6A6365; --waitBg:#EFEAEA;
   --font:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
-  --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
-  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}}
+  --red:#FF6B6A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
+  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF6B6A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#161415; --fg:#F2EDED; --muted:#A79FA1; --line:#3A3537; --card:#221F20;
-  --red:#FF3B3A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
-  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF3B3A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}
+  --red:#FF6B6A; --redText:#FF6B6A; --graf:#2E2A2B; --onGraf:#FFFFFF;
+  --barGeral:#CFC7C9; --dash:#4A4446; --barProj:#FF6B6A; --ok:#6FD3A0; --okBg:#173326; --wait:#A79FA1; --waitBg:#2A2627; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+html,body{margin:0;padding:0}
+img{max-width:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6}
 .wrap{max-width:960px;margin:0 auto;padding-block:32px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{text-wrap:balance;margin:0;line-height:1.2}
@@ -37,37 +39,11 @@ header.top{display:flex;gap:20px;align-items:center;padding-bottom:28px;border-b
 .top .txt{min-width:0;display:grid;gap:6px}
 h1{font-size:clamp(26px,4.6vw,38px);font-weight:800;letter-spacing:-.01em}
 h1 em{font-style:normal;color:var(--redText)}
-.lede{color:var(--muted);max-width:62ch}
-.facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:20px;font-size:14px}
-.facts div{display:flex;flex-direction:column}
-.facts dt{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.facts dd{margin:0;font-weight:600}
 
 section{margin-top:44px}
 section > h2{margin-bottom:6px}
-.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
-.sh .n{font-size:28px;font-weight:800;color:var(--redText);font-variant-numeric:tabular-nums}
 h2{font-size:22px;font-weight:700}
 .sub{color:var(--muted);max-width:66ch;margin-bottom:18px}
-
-/* legenda */
-.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);margin-bottom:12px}
-.legend span{display:inline-flex;align-items:center;gap:7px}
-.sw{width:18px;height:10px;border-radius:3px;display:inline-block}
-.sw.g{background:var(--barGeral)}.sw.p{background:var(--barProj)}
-
-/* cronograma */
-.gscroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
-.gantt{min-width:760px;display:grid;grid-template-columns:230px repeat(15,1fr);font-size:13px}
-.gantt .h{font-size:11px;font-weight:600;color:var(--muted);text-align:center;padding:8px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
-.gantt .h.lab{text-align:left;padding-left:12px}
-.gantt .ph{grid-row:1;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:8px 10px;color:var(--fg);background:var(--card);border-bottom:1px solid var(--line);border-left:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gantt .lbl{grid-column:1;padding:7px 12px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:baseline;min-width:0}
-.gantt .lbl b{font-weight:700;color:var(--redText);flex:none;width:30px;font-variant-numeric:tabular-nums}
-.gantt .lbl span{min-width:0}
-.gantt .cell{border-bottom:1px solid var(--line);border-left:1px dashed var(--line)}
-.gantt .bar{align-self:center;height:16px;border-radius:4px;margin:0 3px}
-.bar.g{background:var(--barGeral)}.bar.p{background:var(--barProj)}
 
 /* apoio: linha dentro do card do material */
 .apoio-row{grid-column:2/-1;display:flex;justify-content:space-between;align-items:center;gap:12px 18px;flex-wrap:wrap;margin-top:6px;padding-top:12px;border-top:1px dashed var(--dash)}
@@ -78,21 +54,18 @@ h2{font-size:22px;font-weight:700}
 .act.sm{gap:6px}
 .act.sm .btn{font-size:12px;padding:5px 11px}
 .meta2{font-size:12px;color:var(--muted);white-space:nowrap}
-.msg:empty{display:none}
 
 /* grupos */
 .grupos{display:grid;gap:36px}
 .rec{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:0 0 12px;padding:12px 16px;border:1.5px dashed var(--dash);border-radius:10px}
 .rec .rb{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 300px}
 .rec .ico{flex:none;width:40px;height:40px;border-radius:8px;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
-.rec .eb{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .rec b{display:block;font-size:15px}
 .rec .rd{display:block;font-size:13px;color:var(--muted)}
 .rec .act .btn.pri{background:var(--fg);border-color:var(--fg);color:var(--bg)}
 .gh{display:grid;gap:2px;margin-bottom:12px;padding-left:12px;border-left:3px solid var(--red)}
 .gh h3{font-size:17px;font-weight:700}
 .gh p{font-size:14px;color:var(--muted)}
-.ver{font-size:12px;color:var(--muted);white-space:nowrap}
 
 /* materiais */
 .mats{list-style:none;margin:0;padding:0;display:grid;gap:12px}
@@ -107,15 +80,12 @@ h2{font-size:22px;font-weight:700}
 .chip.proj{border-color:var(--red);color:var(--redText)}
 .act{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:150px}
 .st{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
-.st.ok{background:var(--okBg);color:var(--ok)}
 .st.wait{background:var(--waitBg);color:var(--wait)}
 .btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .btn.pri{background:var(--red);color:#fff;border:1px solid var(--red)}
-.btn.sec{background:transparent;color:var(--fg);border:1px solid var(--line)}
 .btn:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .btn:hover{filter:brightness(1.05)}
-.msg{font-size:12px;color:var(--muted);min-height:1em}
 
 .note{margin-top:14px;font-size:13px;color:var(--muted)}
 footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
@@ -130,23 +100,21 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);display
   .btns{justify-content:flex-start}
 }
 </style>
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
+
 <div class="wrap">
   <header class="top">
     <div class="logo"><img src="logo.png" alt="dotLAB"></div>
     <div class="txt">
       <div class="eyebrow">Material de introdução à pesquisa</div>
       <h1>Sua trilha no dot<em>LAB</em></h1>
-      <p class="lede">Os materiais de introdução à pesquisa do projeto, na ordem sugerida de leitura. O ritmo de cada estudante é combinado com a orientadora.</p>
     </div>
   </header>
 
-
   <section aria-labelledby="mats">
     <h2 id="mats">Materiais</h2>
-    <p class="sub">Os PDFs ficam disponíveis aqui assim que cada material é aprovado pela orientação.</p>
+    <p class="sub">Os materiais de introdução à pesquisa do projeto, na ordem sugerida de leitura. O ritmo de cada estudante é combinado com a orientadora.</p>
     <div class="grupos" id="lista"></div>
     <p class="note">Os materiais do projeto usam a identidade visual do Isso é normal?. Os gerais usam exemplos do hansen.ai, outro projeto do dotLAB.</p>
   </section>
@@ -166,6 +134,7 @@ const MATS = [
   {n:"5", t:"Como buscar e ler artigos", d:"Onde procurar, como montar a busca, a literatura cinzenta e a leitura crítica de artigos.", tipo:"g", pdf:"pdfs/como-buscar-e-ler-artigos.pdf", pag:10, ver:"Versão 1.0 · novembro de 2026"},
   {n:"5-apoio", num:"5", apoio:true, t:"Apoio às atividades", d:"Acompanha o material Como buscar e ler artigos. Orientações para fazer as atividades, sem as respostas.", tipo:"g", pdf:"pdfs/como-buscar-e-ler-artigos-apoio.pdf", pag:8, ver:"Versão 1.0 · novembro de 2026"},
   {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
+  {n:"6b", t:"Ética na pesquisa assistida por LLMs", d:"Riscos do uso de LLMs na pesquisa, o freio ético e um protocolo adaptado do curso CR835 (UnB).", tipo:"g", pdf:"pdfs/etica-na-pesquisa-com-llms.pdf", pag:10, ver:"Versão 1.0 · novembro de 2026"},
   {n:"base", t:"Base de treino", d:"Dados simulados no formato do jogo, usados em todos os materiais deste bloco.", tipo:"p", pdf:"dados/isso-e-normal-base-de-treino.jsonl", info:"JSONL · 419 registros · setembro de 2026"},
   {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.1 · outubro de 2026"},
   {n:"8", t:"Conhecer os dados", d:"Descrever a base: tamanho, tipos de evento, campos e valores ausentes.", tipo:"p", pdf:"pdfs/conhecer-os-dados.pdf", pag:5, ver:"Versão 1.0 · outubro de 2026"},
@@ -174,23 +143,22 @@ const MATS = [
   {n:"11", t:"Gráficos", d:"Escolher e construir a figura certa para cada resultado.", tipo:"p", st:"prep"},
   {n:"12", t:"Interpretar os resultados", d:"Transformar números em conclusões e reconhecer as limitações.", tipo:"p", st:"prep"},
   {n:"13", t:"Da análise ao resumo científico", d:"Como transformar os resultados da análise num resumo científico.", tipo:"g", st:"prep"},
-  {n:"14", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"}
+  {n:"14", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"},
+  {n:"15", t:"Como escrever prompts eficazes", d:"Os elementos de um bom prompt, a entrevista guiada e um exercício com prompts do projeto.", tipo:"g", pdf:"pdfs/como-escrever-prompts-eficazes.pdf", pag:5, ver:"Versão 1.0 · novembro de 2026"}
 ];
 const GRUPOS = [
   {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","2-apoio","3","3-apoio"]},
-  {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas.", ns:["4","5","5-apoio","6"]},
+  {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas e no uso de LLMs.", ns:["4","5","5-apoio","6","6b"]},
   {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", rec:"base", ns:["7","8","9","10","11","12"]},
-  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto e apresentá-los.", ns:["13","14"]}
+  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto, apresentá-los e escrever bons prompts.", ns:["13","14","15"]}
 ];
-/* ações de um material: PDF disponível ou situação */
+/* ações de um material: PDF disponível (abre em nova aba) ou situação */
 function preencher(box, m){
   if(m.pdf){
     const v=(m.ver||"").match(/Versão\s*([\d.]+)/);
-    box.innerHTML=`<div class="btns"><a class="btn sec" target="_blank" rel="noopener">Abrir</a><a class="btn pri dl">Baixar PDF</a></div><span class="meta2"></span>`;
+    box.innerHTML=`<div class="btns"><a class="btn pri" target="_blank" rel="noopener">Abrir <span aria-hidden="true">↗</span></a></div><span class="meta2"></span>`;
     box.querySelector(".meta2").textContent=m.info||(`PDF · ${m.pag} páginas`+(v?` · versão ${v[1]}`:""));
-    if(m.info) box.querySelector(".btn.pri").textContent="Baixar arquivo";
-    box.querySelector("a").href=m.pdf;
-    const dl=box.querySelector("a.dl"); dl.href=m.pdf; dl.setAttribute("download", m.pdf.split("/").pop());
+    const a=box.querySelector("a"); a.href=m.pdf; a.setAttribute("aria-label", "Abrir "+m.t+" em nova aba");
   } else {
     box.innerHTML=`<span class="st wait">${m.st==="rev"?"Em revisão":"Em preparação"}</span>`;
   }
@@ -211,24 +179,24 @@ GRUPOS.forEach(gr=>{
     sec.insertBefore(rc, ul);
   }
   gr.ns.filter(n=>!n.endsWith("-apoio")).map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
-  const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");
-  li.innerHTML=`<div class="num"></div><div class="body"><h3></h3><p></p><div class="meta"><span class="chip ${m.tipo==="p"?"proj":""}"></span></div></div><div class="act"></div>`;
-  li.querySelector(".num").textContent=m.n;
-  li.querySelector("h3").textContent=m.t;
-  li.querySelector("p").textContent=m.d;
-  li.querySelector(".chip").textContent=m.tipo==="p"?"Do projeto":"Geral do dotLAB";
-  preencher(li.querySelector(".act"), m);
-  const ap=MATS.find(x=>x.n===m.n+"-apoio");
-  if(ap){
-    const row=document.createElement("div"); row.className="apoio-row";
-    row.innerHTML=`<div class="ab"><span class="ico" aria-hidden="true">↳</span><div><b>Apoio às atividades</b><span class="ad">Orientações para fazer as atividades, sem as respostas.</span></div></div><div class="act sm"></div>`;
-    preencher(row.querySelector(".act"), ap);
-    li.appendChild(row);
-  }
-  ul.appendChild(li);
+    const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");
+    li.innerHTML=`<div class="num"></div><div class="body"><h3></h3><p></p><div class="meta"><span class="chip ${m.tipo==="p"?"proj":""}"></span></div></div><div class="act"></div>`;
+    li.querySelector(".num").textContent=m.n;
+    li.querySelector("h3").textContent=m.t;
+    li.querySelector("p").textContent=m.d;
+    li.querySelector(".chip").textContent=m.tipo==="p"?"Do projeto":"Geral do dotLAB";
+    preencher(li.querySelector(".act"), m);
+    const ap=MATS.find(x=>x.n===m.n+"-apoio");
+    if(ap){
+      const row=document.createElement("div"); row.className="apoio-row";
+      row.innerHTML=`<div class="ab"><span class="ico" aria-hidden="true">↳</span><div><b>Apoio às atividades</b><span class="ad">Orientações para fazer as atividades, sem as respostas.</span></div></div><div class="act sm"></div>`;
+      preencher(row.querySelector(".act"), ap);
+      li.appendChild(row);
+    }
+    ul.appendChild(li);
   });
 });
-
 </script>
+
 </body>
 </html>
