@@ -58,6 +58,7 @@ h2{font-size:22px;font-weight:700}
 /* grupos */
 .grupos{display:grid;gap:36px}
 .rec{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:0 0 12px;padding:12px 16px;border:1.5px dashed var(--dash);border-radius:10px}
+.rec.rec-fim{margin:12px 0 0}
 .rec .rb{display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 300px}
 .rec .ico{flex:none;width:40px;height:40px;border-radius:8px;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
 .rec b{display:block;font-size:15px}
@@ -134,23 +135,25 @@ const MATS = [
   {n:"5-apoio", num:"5", apoio:true, t:"Apoio às atividades", d:"Acompanha o material Como buscar e ler artigos. Orientações para fazer as atividades, sem as respostas.", tipo:"g", pdf:"pdfs/como-buscar-e-ler-artigos-apoio.pdf", pag:8, ver:"Versão 1.1 · novembro de 2026"},
   {n:"6", t:"Ética em pesquisa com pessoas", d:"Consentimento, proteção de dados e o papel do Comitê de Ética em Pesquisa.", tipo:"g", st:"prep"},
   {n:"6b", t:"Ética na pesquisa assistida por LLMs", d:"Riscos do uso de LLMs na pesquisa, o freio ético e um protocolo adaptado do curso CR835 (UnB).", tipo:"g", pdf:"pdfs/etica-na-pesquisa-com-llms.pdf", pag:10, ver:"Versão 1.1 · novembro de 2026"},
-  {n:"base", t:"Base de treino", d:"Dados simulados no formato do jogo, usados em todos os materiais deste bloco.", tipo:"p", pdf:"dados/isso-e-normal-base-de-treino.jsonl", info:"JSONL · 419 registros · setembro de 2026"},
+  {n:"base", t:"Base de treino", d:"Dados simulados no formato do jogo, usados em todos os materiais deste bloco.", tipo:"p", pdf:"dados/isso-e-normal-base-de-treino.jsonl", info:"JSONL · 516 registros · setembro de 2026"},
   {n:"7", t:"Preparar o ambiente", d:"Google Colab e Python: criar o notebook, carregar a base e organizar o trabalho.", tipo:"p", pdf:"pdfs/preparar-o-ambiente.pdf", pag:6, ver:"Versão 1.2 · novembro de 2026"},
   {n:"8", t:"Conhecer os dados", d:"Descrever a base: tamanho, tipos de evento, campos e valores ausentes.", tipo:"p", pdf:"pdfs/conhecer-os-dados.pdf", pag:5, ver:"Versão 1.1 · novembro de 2026"},
-  {n:"9", t:"Perguntas aos dados", d:"Responder perguntas com contagens, médias e taxas, em pandas.", tipo:"p", st:"prep"},
+  {n:"9", t:"Perguntas aos dados", d:"O mapa das perguntas que os dados permitem responder, com engajamento, desempenho e os limites da base.", tipo:"p", pdf:"pdfs/perguntas-aos-dados.pdf", pag:9, ver:"Versão 1.1 · novembro de 2026"},
   {n:"10", t:"Qualidade dos dados", d:"Encontrar e tratar problemas na base antes de concluir algo.", tipo:"p", st:"prep"},
-  {n:"11", t:"Gráficos", d:"Escolher e construir a figura certa para cada resultado.", tipo:"p", st:"prep"},
-  {n:"12", t:"Interpretar os resultados", d:"Transformar números em conclusões e reconhecer as limitações.", tipo:"p", st:"prep"},
-  {n:"13", t:"Trabalhar com um LLM na análise", d:"Como pedir, dar contexto, dividir tarefas, guardar decisões e revisar respostas ao usar um LLM com a base de treino.", tipo:"p", pdf:"pdfs/trabalhar-com-um-llm-na-analise.pdf", pag:7, ver:"Versão 1.1 · novembro de 2026"},
-  {n:"14", t:"Da análise ao resumo científico", d:"Como transformar os resultados da análise num resumo científico.", tipo:"g", st:"prep"},
-  {n:"15", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"},
-  {n:"16", t:"Como escrever prompts eficazes", d:"Os elementos de um bom prompt, a entrevista guiada e um exercício com prompts do projeto.", tipo:"g", pdf:"pdfs/como-escrever-prompts-eficazes.pdf", pag:5, ver:"Versão 1.1 · novembro de 2026"}
+  {n:"11", t:"As cartas por dentro", d:"Dificuldade e discriminação das cartas, tipos de erro, comparações na mesma pessoa e perfis de jogadoras.", tipo:"p", st:"prep"},
+  {n:"12", t:"Gráficos", d:"Escolher e construir a figura certa para cada resultado.", tipo:"p", st:"prep"},
+  {n:"13", t:"Interpretar os resultados", d:"Transformar números em conclusões e reconhecer as limitações.", tipo:"p", st:"prep"},
+  {n:"14", t:"Trabalhar com um LLM na análise de dados", d:"Como pedir, dar contexto, dividir tarefas, guardar decisões e revisar respostas ao usar um LLM com a base de treino.", tipo:"p", pdf:"pdfs/trabalhar-com-um-llm-na-analise.pdf", pag:7, ver:"Versão 1.3 · novembro de 2026"},
+  {n:"relatorio", t:"Relatório da base de treino", d:"Os resultados dos materiais deste bloco, com gráficos interativos e o código de cada análise.", tipo:"p", pdf:"relatorio-base-de-treino.html", info:"Página interativa · abre no navegador"},
+  {n:"15", t:"Da análise ao resumo científico", d:"Como transformar os resultados da análise num resumo científico.", tipo:"g", st:"prep"},
+  {n:"16", t:"Apresentar a pesquisa", d:"Guia para pôster e slides, com modelos no visual do projeto.", tipo:"g", st:"prep"},
+  {n:"17", t:"Como escrever prompts eficazes para escrita científica", d:"Os elementos de um bom prompt, a entrevista guiada e um exercício com prompts do projeto.", tipo:"g", pdf:"pdfs/como-escrever-prompts-eficazes.pdf", pag:5, ver:"Versão 1.2 · novembro de 2026"}
 ];
 const GRUPOS = [
   {t:"Para começar", d:"Quem somos, o problema que o projeto estuda e como o jogo funciona.", ns:["1","2","2-apoio","3","3-apoio"]},
   {t:"Para pesquisar", d:"A pergunta de pesquisa, a busca e a leitura de artigos e a ética na pesquisa com pessoas e no uso de LLMs.", ns:["4","5","5-apoio","6","6b"]},
-  {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", rec:"base", ns:["7","8","9","10","11","12","13"]},
-  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto, apresentá-los e escrever bons prompts.", ns:["14","15","16"]}
+  {t:"Para analisar os dados", d:"Do ambiente de trabalho à interpretação dos resultados, em Python, com a base de treino.", rec:"base", rec2:"relatorio", ns:["7","8","9","10","11","12","13","14"]},
+  {t:"Para escrever e apresentar", d:"Como transformar os resultados em texto, apresentá-los e escrever bons prompts.", ns:["15","16","17"]}
 ];
 /* ações de um material: PDF disponível (abre em nova aba) ou situação */
 function preencher(box, m){
@@ -177,6 +180,13 @@ GRUPOS.forEach(gr=>{
     rc.querySelector("b").textContent=r.t; rc.querySelector(".rd").textContent=r.d;
     preencher(rc.querySelector(".act"), r);
     sec.insertBefore(rc, ul);
+  }
+  if(gr.rec2){
+    const r=MATS.find(m=>m.n===gr.rec2), rc=document.createElement("div"); rc.className="rec rec-fim";
+    rc.innerHTML=`<div class="rb"><span class="ico" aria-hidden="true">▦</span><div><b></b><span class="rd"></span></div></div><div class="act sm"></div>`;
+    rc.querySelector("b").textContent=r.t; rc.querySelector(".rd").textContent=r.d;
+    preencher(rc.querySelector(".act"), r);
+    sec.appendChild(rc);
   }
   gr.ns.filter(n=>!n.endsWith("-apoio")).map(n=>MATS.find(m=>m.n===n)).forEach(m=>{
     const li=document.createElement("li"); li.className="mat"+(m.pdf?" on":"");

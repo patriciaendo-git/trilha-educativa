@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Relatório da base de treino</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Figtree:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: coluna de leitura única; cada seção = pergunta → figura interativa → como fizemos → leia assim */
+:root{
+  --ocre:#E8B04B; --cafe:#2A1B14; --areia:#F5E9DC; --papel:#FBF3E8; --urucum:#8C2A17; --verde:#5E8C4A; --verm:#B23A24;
+  --bg:#FFFDF9; --fg:#2A1B14; --muted:#6B5A4E; --line:#EADBC8; --card:#FBF3E8; --card2:#F5E9DC;
+  --accent:#8C2A17; --onaccent:#FFFFFF; --mark:#E8B04B; --grey:#B8A796; --code-bg:#2A1B14; --code-fg:#F5E9DC;
+  --display:"Unbounded",system-ui,sans-serif; --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono","DejaVu Sans Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17100C; --fg:#F5E9DC; --muted:#BFAE9F; --line:#3A2C23; --card:#221812; --card2:#2C2018;
+  --accent:#E9876C; --onaccent:#17100C; --mark:#E8B04B; --grey:#6E5E51; --verde:#8FC27A; --verm:#E9876C; --code-bg:#0E0907; --code-fg:#F5E9DC; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17100C; --fg:#F5E9DC; --muted:#BFAE9F; --line:#3A2C23; --card:#221812; --card2:#2C2018;
+  --accent:#E9876C; --onaccent:#17100C; --mark:#E8B04B; --grey:#6E5E51; --verde:#8FC27A; --verm:#E9876C; --code-bg:#0E0907; --code-fg:#F5E9DC; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;margin:0}
+.hero{background:var(--ocre);color:#2A1B14;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 2.4rem);padding-bottom:2.2rem}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.marca{font-family:var(--display);font-weight:800;line-height:1;display:flex;gap:.5ch;align-items:baseline;font-size:1rem}
+.marca b{color:#8C2A17;font-weight:800}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.08;margin:.9rem 0 .7rem;text-wrap:balance;letter-spacing:-.01em}
+.hero p{max-width:62ch;margin:0;font-size:1.08rem}
+.aviso{margin-top:1.2rem;display:inline-flex;gap:.6rem;align-items:flex-start;background:#FBF3E8;border-radius:10px;padding:.7rem 1rem;font-size:.95rem;max-width:64ch}
+.aviso b{color:#8C2A17}
+nav.toc{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.4rem}
+nav.toc a{font-size:.85rem;font-weight:700;color:#2A1B14;text-decoration:none;border:1.5px solid #2A1B14;border-radius:99px;padding:.2rem .75rem}
+nav.toc a:hover,nav.toc a:focus-visible{background:#2A1B14;color:#F5E9DC;outline:none}
+main{padding-block:1rem 4rem}
+section{padding-top:2.6rem;scroll-margin-top:1rem}
+section+section{border-top:1px solid var(--line);margin-top:2.6rem}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,3.2vw,1.75rem);line-height:1.2;margin:.35rem 0 .8rem;text-wrap:balance}
+h3{font-family:var(--display);font-weight:500;font-size:1.02rem;margin:1.6rem 0 .5rem}
+p{margin:.7rem 0;max-width:68ch}
+.pergunta{font-size:1.12rem;font-weight:500;border-left:4px solid var(--mark);padding:.1rem 0 .1rem 1rem;max-width:64ch}
+.fig{background:var(--card);border-radius:14px;padding:1.1rem 1.1rem .9rem;margin:1.1rem 0}
+.fig svg{display:block;width:100%;height:auto;overflow:visible}
+.fig .legenda{font-size:.85rem;color:var(--muted);margin:.5rem 0 0}
+.controles{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin-bottom:.8rem;font-size:.92rem}
+button.b{font:inherit;font-weight:700;font-size:.88rem;border-radius:8px;padding:.45rem .85rem;cursor:pointer;border:1.5px solid var(--fg);background:transparent;color:var(--fg)}
+button.b.pri{background:var(--fg);color:var(--bg)}
+button.b:hover{filter:brightness(1.08)}
+button.b:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+select,input[type=range]{font:inherit;accent-color:var(--accent)}
+select{background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:8px;padding:.3rem .5rem}
+label{display:inline-flex;gap:.45rem;align-items:center}
+.leia{background:var(--card2);border-radius:12px;padding:.9rem 1.1rem;margin:1rem 0}
+.leia>b:first-child{display:block;font-family:var(--display);font-weight:500;font-size:.9rem;margin-bottom:.2rem}
+.leia p{margin:.4rem 0}
+details{margin:1rem 0;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+summary{cursor:pointer;padding:.7rem 1rem;font-weight:700;font-size:.95rem;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--mono);color:var(--accent)}
+details[open] summary::after{content:"–"}
+details .corpo{padding:0 1rem 1rem}
+pre{background:var(--code-bg);color:var(--code-fg);font-family:var(--mono);font-size:.8rem;line-height:1.55;border-radius:10px;padding:.9rem 1rem;overflow-x:auto;margin:.6rem 0}
+code{font-family:var(--mono);font-size:.86em;background:var(--card2);border-radius:4px;padding:.05em .3em}
+pre code{background:none;padding:0;font-size:inherit}
+.out{background:var(--card2);color:var(--fg)}
+.no-material{display:inline-block;font-size:.8rem;font-weight:700;color:var(--muted);border:1px dashed var(--grey);border-radius:99px;padding:.15rem .7rem;margin-top:.4rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:1rem 0}
+.kpi{background:var(--card);border-radius:12px;padding:.8rem 1rem}
+.kpi b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi span{font-size:.85rem;color:var(--muted)}
+.res{font-variant-numeric:tabular-nums;font-weight:700}
+.big{font-family:var(--display);font-size:2.2rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.slider{display:grid;grid-template-columns:minmax(120px,190px) 1fr 4.5rem;gap:.8rem;align-items:center;margin:.55rem 0;font-size:.92rem}
+.slider output{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.slider input{width:100%}
+.tbl{overflow-x:auto;margin:.8rem 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th{text-align:left;font-weight:700;border-bottom:2px solid var(--fg);padding:.45rem .6rem}
+td{border-bottom:1px solid var(--line);padding:.45rem .6rem;vertical-align:top;font-variant-numeric:tabular-nums}
+.respostas{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.4rem;margin-top:.7rem}
+.respostas div{font-size:.82rem;border-radius:8px;padding:.35rem .55rem;background:var(--bg);border:1.5px solid var(--line)}
+.respostas div.ok{border-color:var(--verde)}
+.respostas div.erro{border-color:var(--verm);border-style:dashed}
+.respostas i{font-style:normal;font-weight:700}
+.chip{display:inline-block;font-size:.75rem;font-weight:700;border-radius:99px;padding:.05rem .55rem}
+.chip.alerta{background:var(--accent);color:var(--onaccent)}
+.chip.comum{background:var(--verde);color:var(--bg)}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.min0{min-width:0}
+footer{border-top:1px solid var(--line);padding-block:1.5rem 3rem;font-size:.85rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:560px){.slider{grid-template-columns:1fr 4rem}.slider span:first-child{grid-column:1/-1}}
+nav.abas{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.abas-in{display:flex;gap:.3rem;overflow-x:auto;padding-block:.55rem}
+nav.abas a{flex:none;font-weight:700;font-size:.9rem;color:var(--fg);text-decoration:none;border-radius:99px;padding:.35rem .9rem;border:1.5px solid transparent}
+nav.abas a:hover{border-color:var(--line)}
+nav.abas a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+nav.abas a:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.aba>section:first-child,.aba>.previa:first-child{margin-top:0}
+.previa{margin-top:2rem;background:var(--card2);border-radius:12px;padding:.7rem 1rem;font-size:.95rem}
+td.aus{cursor:pointer;font-weight:700}
+td.aus:focus-visible{outline:3px solid var(--mark)}
+</style>
+
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="marca">isso é <b>normal?</b></div>
+  <h1>Relatório da base de treino</h1>
+  <p>Os resultados dos materiais do bloco <b>Para analisar os dados</b>, aplicados à base de treino, passo a passo: a pergunta, o código que gerou cada resultado e como lê-lo. Cada aba acompanha um material. Mexa nos controles para ver os métodos funcionando.</p>
+  <div class="aviso"><span aria-hidden="true">●</span><span><b>Dados simulados.</b> A base de treino foi gerada por computador, no formato do jogo, com efeitos planejados. Os resultados servem para aprender os métodos e não dizem nada sobre estudantes reais.</span></div>
+</div></header>
+
+<nav class="abas" aria-label="Materiais"><div class="wrap abas-in">
+  <a href="#conhecer" data-aba="conhecer">Conhecer os dados</a>
+  <a href="#perguntas" data-aba="perguntas">Perguntas aos dados</a>
+  <a href="#qualidade" data-aba="qualidade">Qualidade dos dados</a>
+  <a href="#cartas-por-dentro" data-aba="cartas-por-dentro">As cartas por dentro</a>
+  <a href="#graficos" data-aba="graficos">Gráficos</a>
+  <a href="#interpretar" data-aba="interpretar">Interpretar os resultados</a>
+</div></nav>
+<main class="wrap">
+<div class="aba" id="aba-conhecer">
+<section id="c-tamanho">
+  <div class="eyebrow">Conhecer os dados</div>
+  <h2>Tamanho e tipos de evento</h2>
+  <p class="pergunta">Quantos registros a base tem, de que tipos e de que período?</p>
+  <div class="kpis">
+    <div class="kpi"><b>516</b><span>registros (linhas)</span></div>
+    <div class="kpi"><b>7</b><span>colunas (campos)</span></div>
+    <div class="kpi"><b>30</b><span>dias com eventos, de 01/09 a 30/09/2026</span></div>
+    <div class="kpi"><b>1.8</b><span>única versão do jogo</span></div>
+  </div>
+  <div class="fig"><svg id="g-tipos" viewBox="0 0 760 150" role="img" aria-label="Registros por tipo de evento"></svg>
+    <p class="legenda">Cada barra conta os registros de um tipo de evento; o número à direita é a proporção do total.</p></div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Mais da metade dos registros são acessos: visitas à página do jogo. Só 1 em cada 5 registros é uma partida concluída. Por isso, quando a análise é sobre desempenho, a base efetiva é bem menor que os 516 registros.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>df = pd.read_json("isso-e-normal-base-de-treino.jsonl", lines=True, dtype={"versao": str})
+print(df.shape)                                   # (516, 7)
+print(df["tipo"].value_counts())
+print(df["tipo"].value_counts(normalize=True))
+
+df["data"] = pd.to_datetime(df["data"])
+print(df["data"].min().date(), df["data"].max().date(), df["data"].nunique())</code></pre>
+  </div></details>
+  <span class="no-material">No material: Tamanho e estrutura · Tipos de evento e período</span>
+</section>
+
+<section id="c-tipos">
+  <div class="eyebrow">Conhecer os dados</div>
+  <h2>O tipo de cada coluna</h2>
+  <p class="pergunta">O pandas leu cada campo do jeito certo?</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Coluna</th><th>Tipo lido</th><th>O que observar</th></tr></thead>
+    <tbody>
+      <tr><td><code>tipo</code></td><td><code>str</code></td><td>Texto: acesso, inicio ou resultado.</td></tr>
+      <tr><td><code>data</code></td><td><code>str</code></td><td>Lida como texto; vira data com <code>pd.to_datetime</code>.</td></tr>
+      <tr><td><code>versao</code></td><td><code>str</code></td><td>Texto porque pedimos <code>dtype={"versao": str}</code>. Sem isso, “1.8” viraria número.</td></tr>
+      <tr><td><code>instituicao</code></td><td><code>str</code></td><td>Texto, com ausentes nos acessos.</td></tr>
+      <tr><td><code>pontuacao</code></td><td><code>float64</code></td><td>É inteira no jogo, mas vira decimal porque tem ausentes (<code>NaN</code> só existe em decimais).</td></tr>
+      <tr><td><code>total</code></td><td><code>float64</code></td><td>Mesmo motivo da pontuação.</td></tr>
+      <tr><td><code>respostas</code></td><td><code>object</code></td><td>Um dicionário com as 13 cartas.</td></tr>
+    </tbody></table></div>
+  <p class="legenda">Em versões mais antigas do pandas, como a do Colab, as colunas de texto aparecem como <code>object</code> em vez de <code>str</code>.</p>
+  <span class="no-material">No material: Carregar a base com os tipos certos</span>
+</section>
+
+<section id="c-ausentes">
+  <div class="eyebrow">Conhecer os dados</div>
+  <h2>Valores ausentes</h2>
+  <p class="pergunta">Onde faltam valores, e cada ausência tem uma explicação?</p>
+  <div class="fig">
+    <div class="tbl"><table id="t-aus"></table></div>
+    <p class="legenda">Cada célula conta os valores ausentes daquela coluna naquele tipo de evento. Clique numa célula com ausentes para ver o motivo.</p>
+    <p id="aus-motivo" aria-live="polite" class="leia" style="margin:.6rem 0 0">Clique numa célula colorida.</p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Todas as ausências têm motivo: elas dependem do tipo de evento, como prevê o dicionário de dados de <b>O jogo por dentro</b>. Um acesso acontece antes de a pessoa escolher a instituição; uma partida iniciada ainda não tem pontuação nem respostas. Só os resultados têm todos os campos.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>print(df.isna().sum())                          # ausentes por coluna
+print(df.isna().groupby(df["tipo"]).sum())      # ausentes por coluna, separados por tipo</code></pre>
+  </div></details>
+  <span class="no-material">No material: Valores ausentes</span>
+</section>
+
+<section id="c-variaveis">
+  <div class="eyebrow">Conhecer os dados</div>
+  <h2>Variáveis categóricas e numéricas</h2>
+  <p class="pergunta">Como resumir a instituição e a pontuação?</p>
+  <div class="duas">
+    <div class="fig min0" style="margin:0"><b style="font-family:var(--display);font-weight:500">instituicao</b> <span class="legenda">(categórica: contagens)</span>
+      <svg id="g-inst" viewBox="0 0 360 200" role="img" aria-label="Registros por instituição"></svg></div>
+    <div class="fig min0" style="margin:0"><b style="font-family:var(--display);font-weight:500">pontuacao</b> <span class="legenda">(numérica: <code>describe()</code>)</span>
+      <div class="tbl"><table><tbody>
+        <tr><td>count</td><td>105</td></tr><tr><td>mean</td><td>9,09</td></tr><tr><td>std</td><td>2,85</td></tr>
+        <tr><td>min</td><td>2</td></tr><tr><td>25%</td><td>7</td></tr><tr><td>50%</td><td>10</td></tr><tr><td>75%</td><td>11</td></tr><tr><td>max</td><td>13</td></tr></tbody></table></div></div>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Os 292 registros sem instituição são os acessos. Na pontuação, o <code>count</code> é 105: o <code>describe()</code> ignora os ausentes, então conta só os resultados.</p>
+    <p>Repare que a média aqui é 9,09, e na aba <b>Perguntas aos dados</b> é 9,03. A diferença vem das 4 linhas repetidas, que ainda estão na base nesta etapa e são retiradas depois. É um bom exemplo de como uma decisão sobre a qualidade dos dados muda um número.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>print(df["instituicao"].value_counts(dropna=False))   # inclui os ausentes
+print(df["pontuacao"].describe())</code></pre>
+  </div></details>
+  <span class="no-material">No material: Variáveis categóricas e numéricas</span>
+</section>
+
+<section id="c-respostas">
+  <div class="eyebrow">Conhecer os dados</div>
+  <h2>Abrir as respostas das cartas</h2>
+  <p class="pergunta">Como transformar o dicionário de respostas em colunas?</p>
+  <p>O <code>json_normalize</code> transforma o campo <code>respostas</code> de cada partida concluída em 13 colunas, uma por carta. Na base de treino, o resultado é uma tabela de <b>105 linhas e 13 colunas</b>. Veja uma partida antes e depois:</p>
+  <div class="duas">
+    <pre class="min0" style="margin:0"><code id="antes"></code></pre>
+    <div class="tbl min0" style="margin:0"><table id="depois"></table></div>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Com uma coluna por carta, dá para contar acertos por carta, comparar cartas e somar a pontuação. É dessa tabela que partem as abas seguintes. O parágrafo de descrição da base, pedido nas atividades de <b>Conhecer os dados</b>, fica com você.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>res = df[df["tipo"] == "resultado"].copy()
+respostas = pd.json_normalize(res["respostas"].tolist())
+respostas.index = res.index
+res = res.drop(columns="respostas").join(respostas)
+print(respostas.shape)                          # (105, 13)</code></pre>
+  </div></details>
+  <span class="no-material">No material: Abrir as respostas das cartas</span>
+</section>
+</div>
+
+<div class="aba" id="aba-perguntas" hidden>
+
+<section id="base">
+  <div class="eyebrow">Perguntas aos dados</div>
+  <h2>A partida concluída</h2>
+  <p class="pergunta">Quantas partidas válidas temos para analisar?</p>
+  <div class="kpis" id="kpis"></div>
+  <p>Cada <b>partida concluída</b> é uma linha com a instituição, o dia, a versão do jogo e as <b>13 respostas da mesma pessoa</b>. Antes de contar qualquer coisa, retiramos as linhas repetidas: <span class="res" id="t-dup"></span> resultados idênticos a outro. Também há <span class="res" id="t-iguais"></span> partidas com a mesma resposta nas 13 cartas, um sinal de quem respondeu sem ler. Os dois problemas são discutidos em <b>Qualidade dos dados</b>.</p>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>res = df[df["tipo"] == "resultado"].copy()
+respostas = pd.json_normalize(res["respostas"].tolist())
+respostas.index = res.index
+res = res.drop(columns="respostas").join(respostas)
+
+res = res.drop_duplicates()                       # retira linhas repetidas
+res["pontuacao"] = res["pontuacao"].astype(int)
+print(len(res))</code></pre>
+  <p>Depois, transformamos cada resposta em <b>acerto</b> (1) ou <b>erro</b> (0), comparando com o gabarito de <b>O jogo por dentro</b>:</p>
+<pre><code>acertos = pd.DataFrame({c: (res[c] == gabarito[c]).astype(int) for c in cartas})</code></pre>
+  </div></details>
+  <span class="no-material">No material: O dado mais rico</span>
+</section>
+
+<section id="funil">
+  <div class="eyebrow">Engajamento e funil</div>
+  <h2>Quantas partidas chegam ao fim?</h2>
+  <p class="pergunta">Das partidas iniciadas, quantas foram concluídas? Há dias com picos de movimento, e eles trazem partidas ou só acessos?</p>
+  <div class="fig"><svg id="g-funil" viewBox="0 0 760 210" role="img" aria-label="Partidas iniciadas e concluídas por instituição"></svg>
+    <p class="legenda">Barra clara: partidas iniciadas. Barra escura: concluídas. À direita, a taxa de conclusão.</p></div>
+  <div class="fig">
+    <div class="controles"><label><input type="checkbox" id="esconde15"> Esconder o dia 15/09 do gráfico</label></div>
+    <svg id="g-serie" viewBox="0 0 760 280" role="img" aria-label="Acessos e partidas concluídas por dia"></svg>
+    <p class="legenda">Linha cinza: acessos por dia. Linha escura: partidas concluídas por dia. Passe o cursor sobre os pontos para ver os valores.</p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>A taxa geral é de <span class="res" id="t-taxa"></span>. Em 08/09 e 22/09, acessos e partidas sobem juntos. Em 15/09, os acessos passam de 90, mas as partidas não acompanham. Um pico assim, sem partidas, se comporta como robô ou recarga da página, e não como engajamento.</p>
+    <p>A base não registra as ações de divulgação. Para saber se um pico veio de um post, de um story ou de uma visita a uma turma, é preciso cruzar a série com as datas dessas ações, anotadas em outra fonte.</p>
+    <p>Marque a caixa acima: sem o dia 15/09, a escala do gráfico muda e os picos reais aparecem. Um único valor extremo pode esconder o resto da série.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>iniciadas = df[df["tipo"] == "inicio"]["instituicao"].value_counts()
+concluidas = res["instituicao"].value_counts()
+funil = pd.DataFrame({"iniciadas": iniciadas, "concluidas": concluidas})
+funil["taxa"] = (funil["concluidas"] / funil["iniciadas"]).round(2)
+
+por_dia = df.groupby([df["data"].dt.date, "tipo"]).size().unstack(fill_value=0)</code></pre>
+  <p><b>Limite:</b> os acessos contam visitas, não pessoas, e não há como ligar um início a um resultado específico. Por isso a taxa é calculada no agregado.</p>
+  </div></details>
+  <span class="no-material">No material: Engajamento e funil</span>
+</section>
+
+<section id="desempenho">
+  <div class="eyebrow">Desempenho</div>
+  <h2>Como se distribuem as pontuações</h2>
+  <p class="pergunta">Quantos pontos, de 0 a 13, as jogadoras fazem?</p>
+  <div class="fig"><svg id="g-hist" viewBox="0 0 760 260" role="img" aria-label="Distribuição das pontuações"></svg>
+    <p class="legenda">Cada barra conta as partidas com aquela pontuação. Linha tracejada: média. Linha cheia: mediana.</p></div>
+  <div class="leia"><b>Leia assim</b>
+    <p>A <b>média</b> é <span class="res" id="t-media"></span> pontos e a <b>mediana</b>, o valor do meio, é <span class="res" id="t-mediana"></span>. A distribuição se concentra nos valores altos, com uma cauda à esquerda: poucas partidas com pontuação muito baixa puxam a média para baixo da mediana. O desvio padrão é <span class="res" id="t-dp"></span> pontos.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>p = res["pontuacao"]
+print(p.value_counts().sort_index())
+print(round(p.mean(), 2), p.median(), round(p.std(), 2))   # média, mediana, desvio padrão</code></pre>
+  </div></details>
+  <span class="no-material">No material: Desempenho</span>
+</section>
+
+<section id="bootstrap">
+  <div class="eyebrow">Desempenho · incerteza</div>
+  <h2>Bootstrap ao vivo</h2>
+  <p class="pergunta">Se o jogo fosse aplicado de novo, quanto a média poderia mudar?</p>
+  <p>O bootstrap sorteia, com reposição, novas amostras do mesmo tamanho a partir das partidas que temos e calcula a média de cada uma. Use os botões para fazer os sorteios você mesma.</p>
+  <div class="fig">
+    <div class="controles">
+      <button class="b" type="button" id="bs1">Sortear 1 amostra</button>
+      <button class="b" type="button" id="bs100">Sortear 100</button>
+      <button class="b pri" type="button" id="bs10k">Sortear 10.000</button>
+      <button class="b" type="button" id="bs0">Recomeçar</button>
+    </div>
+    <svg id="g-boot" viewBox="0 0 760 250" role="img" aria-label="Médias das amostras sorteadas"></svg>
+    <p class="legenda" id="bs-status"></p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Cada sorteio é uma base “parecida” com a nossa, e cada média cai num lugar um pouco diferente. Com milhares de sorteios, as médias formam um morro. Descartando os 2,5% de cada ponta, sobra o <b>intervalo de confiança de 95%</b>.</p>
+    <p>No notebook, com a semente 42, o resultado é <span class="res" id="t-ic"></span>. Aqui os sorteios não usam semente, então os limites variam um pouco a cada vez, mas ficam sempre perto desses valores.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>rng = np.random.default_rng(42)          # gerador de sorteios; 42 é a semente
+medias = [rng.choice(p, size=len(p), replace=True).mean() for _ in range(10_000)]
+inf, sup = np.percentile(medias, [2.5, 97.5])
+print(f"média {p.mean():.2f}, IC 95% [{inf:.2f}; {sup:.2f}]")</code></pre>
+  </div></details>
+  <span class="no-material">No material: Intervalo de confiança por bootstrap</span>
+</section>
+
+<section id="instituicoes">
+  <div class="eyebrow">Desempenho · comparação</div>
+  <h2>As instituições pontuam diferente?</h2>
+  <p class="pergunta">A diferença entre as instituições é real ou pode ser obra do acaso?</p>
+  <div class="fig"><svg id="g-strip" viewBox="0 0 760 250" role="img" aria-label="Pontuações por instituição"></svg>
+    <p class="legenda">Cada ponto é uma partida. O traço escuro marca a mediana de cada instituição (upe 10, fms 9, cdia 10). A instituição “outra” fica de fora por ter poucas partidas.</p></div>
+  <p>O <b>Kruskal-Wallis</b> compara as três instituições de uma vez: valor-p = <span class="res" id="t-kw"></span>. Não há evidência de diferença. Mesmo assim, para entender o <b>Mann-Whitney</b> e o tamanho de efeito, compare duas instituições:</p>
+  <div class="fig">
+    <div class="controles">
+      <label>Comparar <select id="parA"></select></label><label>com <select id="parB"></select></label>
+      <button class="b" type="button" id="sorteiaPar">Sortear um par de partidas</button>
+    </div>
+    <div class="duas">
+      <div class="min0"><div class="big" id="mw-r">0,00</div><p style="margin:.3rem 0">tamanho de efeito (r)</p><p class="legenda" id="mw-p"></p></div>
+      <div class="min0"><svg id="g-par" viewBox="0 0 360 120" role="img" aria-label="Comparação de todos os pares de partidas"></svg></div>
+    </div>
+    <p class="legenda" id="par-status">Clique em “Sortear um par” para ver de onde vem o r.</p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Imagine sortear uma partida de cada instituição e ver qual pontuou mais. O <b>r</b> é a chance de a primeira ganhar menos a chance de ela perder. A barra acima mostra essas chances contando <b>todos</b> os pares possíveis. Perto de 0, nenhuma das duas tende a pontuar mais.</p>
+    <p>O <b>valor-p</b> diz se uma diferença desse tamanho seria comum caso as instituições fossem iguais. Ele depende do número de partidas: com poucos dados, até um efeito real pode ficar acima de 0,05.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>grupos = {i: res.loc[res["instituicao"] == i, "pontuacao"] for i in ["upe", "fms", "cdia"]}
+print(stats.kruskal(*grupos.values()))
+
+u = stats.mannwhitneyu(grupos["upe"], grupos["fms"])
+n1, n2 = len(grupos["upe"]), len(grupos["fms"])
+r = 2 * u.statistic / (n1 * n2) - 1      # tamanho de efeito
+print(round(u.pvalue, 3), round(r, 2))</code></pre>
+  <p>Nesta página, o valor-p é calculado como no SciPy: aproximação normal, com correção para empates e de continuidade.</p>
+  </div></details>
+  <span class="no-material">No material: Comparar instituições</span>
+</section>
+
+<section id="amostra">
+  <div class="eyebrow">Desempenho · planejamento</div>
+  <h2>Quantas partidas seriam necessárias</h2>
+  <p class="pergunta">Para detectar uma diferença entre duas instituições, de quantas partidas precisamos em cada uma?</p>
+  <div class="fig">
+    <div class="slider"><span>Desvio padrão</span><input type="range" id="s-dp" min="1" max="4" step="0.1" value="1.7"><output id="o-dp"></output></div>
+    <div class="slider"><span>Diferença de interesse</span><input type="range" id="s-dif" min="0.25" max="3" step="0.25" value="1"><output id="o-dif"></output></div>
+    <div class="slider"><span>Poder</span><input type="range" id="s-pod" min="0.5" max="0.95" step="0.05" value="0.8"><output id="o-pod"></output></div>
+    <div class="slider"><span>Significância (α)</span><input type="range" id="s-alfa" min="0.01" max="0.1" step="0.01" value="0.05"><output id="o-alfa"></output></div>
+    <div class="duas" style="margin-top:1rem">
+      <div><div class="big" id="n-res">46</div><p style="margin:.3rem 0">partidas por grupo (comparação de médias)</p></div>
+      <div><div class="big" id="n-np" style="color:var(--fg)">54</div><p style="margin:.3rem 0">com cerca de 15% a mais, para testes não paramétricos</p></div>
+    </div>
+    <p class="legenda" id="n-comp"></p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Comece com os valores do material: desvio padrão de 1,7 e diferença de 1 ponto dão 46 partidas por grupo. Agora leve o desvio padrão a 2,8, o da base de treino: o número quase triplica. Reduza a diferença para 0,5: ele quadruplica, porque a diferença entra ao quadrado na fórmula.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>alfa, poder = 0.05, 0.80
+z_a = stats.norm.ppf(1 - alfa / 2)     # 1,96
+z_b = stats.norm.ppf(poder)            # 0,84
+dp, diferenca = 1.7, 1.0
+n = 2 * (z_a + z_b) ** 2 * dp ** 2 / diferenca ** 2
+print(np.ceil(n))</code></pre>
+  </div></details>
+  <span class="no-material">No material: Quantas partidas seriam necessárias</span>
+</section>
+
+<section id="limites">
+  <div class="eyebrow">Limites</div>
+  <h2>O que estes dados não respondem</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Pergunta</th><th>O que faltaria</th></tr></thead>
+    <tbody>
+      <tr><td>Jogar aumenta o conhecimento?</td><td>Pré-teste e pós-teste</td></tr>
+      <tr><td>O resultado muda por idade ou curso?</td><td>Faixa etária e área do curso, em categorias amplas</td></tr>
+      <tr><td>A pessoa leu ou chutou?</td><td>Tempo por carta, agregado e sem horário</td></tr>
+      <tr><td>Quantas pessoas diferentes jogaram?</td><td>Um identificador anônimo</td></tr>
+      <tr><td>O jogo leva a consultas?</td><td>Seguimento com consentimento</td></tr>
+    </tbody></table></div>
+  <p>E o principal: esta é uma base <b>simulada</b>. Os efeitos encontrados aqui foram colocados na simulação para que os métodos tenham o que encontrar. Com os dados reais do jogo, os mesmos passos podem mostrar outro quadro.</p>
+</section>
+</div>
+<div class="aba" id="aba-cartas-por-dentro" hidden>
+<div class="previa">Prévia: o material <b>As cartas por dentro</b> está em preparação. Esta aba já mostra os resultados que ele vai explicar.</div>
+<section id="cartas">
+  <div class="eyebrow">Análise de itens · prévia de As cartas por dentro</div>
+  <h2>Cada carta, por dentro</h2>
+  <p class="pergunta">Que cartas são mais difíceis? Cada carta separa quem reconhece os sinais de quem não reconhece?</p>
+  <div class="fig">
+    <div class="controles"><label>Ordenar por <select id="ordemCartas"><option value="jogo">ordem do gabarito</option><option value="dif">mais difícil primeiro</option><option value="disc">menos discriminação primeiro</option></select></label></div>
+    <svg id="g-cartas" viewBox="0 0 760 520" role="img" aria-label="Dificuldade e discriminação de cada carta"></svg>
+    <p class="legenda">Barra: proporção de acerto (dificuldade). Número à direita: discriminação. <span class="chip alerta">alerta</span> gabarito “Vale investigar”; <span class="chip comum">comum</span> gabarito “É comum”.</p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>A <b>dificuldade</b> é a proporção de acerto: quanto menor, mais difícil a carta. As cartas do intestino e da urina são as mais difíceis, com 43% de acerto cada.</p>
+    <p>A <b>discriminação</b> é a correlação entre acertar a carta e a pontuação nas outras 12 (ponto-bisserial corrigida). Valores acima de 0,30 indicam que a carta separa bem quem reconhece os sinais; abaixo de 0,20, ela quase não separa e é candidata a revisão. As cartas comuns têm a discriminação mais baixa.</p>
+    <p>O <b>KR-20</b> mede se as 13 cartas medem um mesmo construto: <span class="res" id="t-kr"></span>. Valores a partir de 0,70 costumam ser considerados aceitáveis.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>dificuldade = acertos.mean()                    # proporção de acerto de cada carta
+total = acertos.sum(axis=1)
+discriminacao = {c: np.corrcoef(acertos[c], total - acertos[c])[0, 1] for c in cartas}
+
+k = len(cartas)
+pq = (acertos.mean() * (1 - acertos.mean())).sum()
+kr20 = k / (k - 1) * (1 - pq / total.var(ddof=0))</code></pre>
+  </div></details>
+  <span class="no-material">No material: As cartas por dentro (em preparação)</span>
+</section>
+
+<section id="erros">
+  <div class="eyebrow">Tipos de erro · detecção de sinal</div>
+  <h2>Errar por não distinguir ou por normalizar?</h2>
+  <p class="pergunta">As jogadoras erram porque não distinguem um sinal de alerta de algo comum, ou porque tendem a achar tudo normal?</p>
+  <p>Para cada jogadora, calculamos a <b>sensibilidade</b> (a proporção das 9 cartas de alerta marcadas como “Vale investigar”) e a <b>especificidade</b> (a proporção das 4 cartas comuns marcadas como “É comum”). Com elas, a teoria de detecção de sinal calcula dois números:</p>
+  <ul>
+    <li><b>d′</b>: a capacidade de distinguir um sinal de alerta de algo comum. Quanto maior, melhor.</li>
+    <li><b>critério c</b>: o viés de resposta. Positivo, a pessoa tende a normalizar (“é tudo normal”); negativo, tende a alarmar (“tudo é grave”).</li>
+  </ul>
+  <div class="fig">
+    <svg id="g-sdt" viewBox="0 0 760 380" role="img" aria-label="Capacidade de distinguir e viés de resposta de cada jogadora"></svg>
+    <p class="legenda">Cada ponto é uma jogadora. Clique num ponto para ver as 13 respostas dela.</p>
+    <div id="jogadora" aria-live="polite"></div>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Em média, a sensibilidade é <span class="res" id="t-sens"></span> e a especificidade, <span class="res" id="t-esp"></span>: as jogadoras deixam passar mais sinais de alerta do que dão alarmes falsos. O critério c médio é <span class="res" id="t-c"></span>, positivo: o erro mais frequente é normalizar.</p>
+    <p>São problemas diferentes, com ações educativas diferentes. Quem não distingue (d′ baixo) precisa aprender o que diferencia cada sinal. Quem normaliza (c alto) já distingue, mas precisa aprender que a dor intensa não é normal.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>alerta = [c for c in cartas if gabarito[c] == "r"]
+comuns = [c for c in cartas if gabarito[c] == "l"]
+sens = (res[alerta] == "r").mean(axis=1)      # sinais de alerta reconhecidos
+fa = (res[comuns] == "r").mean(axis=1)        # alarmes falsos nas situações comuns
+
+ajusta = lambda x, n: x.clip(1 / (2 * n), 1 - 1 / (2 * n))   # evita 0 e 1
+z = stats.norm.ppf
+d = z(ajusta(sens, 9)) - z(ajusta(fa, 4))
+c = -(z(ajusta(sens, 9)) + z(ajusta(fa, 4))) / 2</code></pre>
+  <p>O ajuste evita proporções de 0 ou 1, para as quais o valor z seria infinito.</p>
+  </div></details>
+  <span class="no-material">No material: As cartas por dentro (em preparação)</span>
+</section>
+
+<section id="pareadas">
+  <div class="eyebrow">Comparações na mesma pessoa</div>
+  <h2>Os sinais intestinais e urinários ficam para trás?</h2>
+  <p class="pergunta">Os sinais intestinais e urinários são menos reconhecidos que a dor menstrual?</p>
+  <p>Como cada jogadora responde a todas as cartas, dá para comparar duas cartas <b>na mesma pessoa</b>. O teste de <b>McNemar</b> olha só para as jogadoras que acertaram uma carta e erraram a outra:</p>
+  <div class="fig">
+    <div class="controles"><label>Comparar <select id="mcA"><option value="coco">coco (intestino)</option><option value="xixi">xixi (urina)</option></select></label><label>com <select id="mcB"><option value="aula">aula (perder aula)</option><option value="vomito">vomito (vômito ou desmaio)</option></select></label></div>
+    <div class="tbl"><table id="t-mc"></table></div>
+    <p class="legenda" id="mc-leia"></p>
+  </div>
+  <div class="leia"><b>Leia assim</b>
+    <p>Somando as cartas por grupo, o acerto nos sinais intestinais e urinários é de <span class="res" id="t-gi"></span>, contra <span class="res" id="t-gd"></span> nas cartas de dor. Uma regressão logística multinível, que separa o que é da carta do que é da pessoa, confirma: a chance de acertar uma carta intestinal ou urinária é cerca de 5 vezes menor que a de acertar uma carta de dor, para a mesma jogadora.</p>
+    <p>Lembre que a base é simulada e que essa diferença foi colocada de propósito. O que a análise mostra é que o método consegue encontrá-la.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>from statsmodels.stats.contingency_tables import mcnemar
+
+tabela = pd.crosstab(acertos["coco"], acertos["aula"])
+print(tabela)
+print(mcnemar(tabela, exact=True).pvalue)</code></pre>
+  <p>A regressão multinível (acerto ~ tipo de sinal + instituição + (1 | jogadora) + (1 | carta)) foi ajustada com o <code>BinomialBayesMixedGLM</code> do statsmodels. É um método avançado, para estudar mais adiante.</p>
+  </div></details>
+  <span class="no-material">No material: As cartas por dentro (em preparação)</span>
+</section>
+
+<section id="perfis">
+  <div class="eyebrow">Padrões e perfis</div>
+  <h2>Três perfis de jogadora</h2>
+  <p class="pergunta">Há grupos de jogadoras que erram as mesmas cartas?</p>
+  <div class="fig"><div class="tbl"><svg id="g-perfis" viewBox="0 0 760 196" role="img" aria-label="Acerto de cada carta em cada perfil" style="min-width:620px"></svg></div>
+    <p class="legenda">Cada célula é a proporção de acerto da carta no perfil: quanto mais escura, mais acerto.</p></div>
+  <div class="leia"><b>Leia assim</b><div id="perfis-txt"></div>
+    <p>Os perfis vêm do agrupamento <b>k-modes</b>, que junta jogadoras com padrões de acerto parecidos. O número de perfis (três) foi escolhido por nós; com outro número, os grupos mudam. Por isso, perfis são uma pista a investigar, não uma classificação definitiva.</p></div>
+  <details><summary>Como fizemos</summary><div class="corpo">
+<pre><code>!pip install kmodes
+from kmodes.kmodes import KModes
+
+km = KModes(n_clusters=3, init="Huang", n_init=10, random_state=1)
+perfil = km.fit_predict(acertos.values)
+print(acertos.groupby(perfil).mean().round(2))</code></pre>
+  </div></details>
+  <span class="no-material">No material: Para ir além</span>
+</section>
+
+
+</div>
+<div class="aba" id="aba-qualidade" hidden>
+<section><div class="eyebrow">Em preparação</div><h2>Qualidade dos dados</h2>
+  <p class="pergunta">A base tem problemas que podem distorcer as conclusões?</p>
+  <p>Esta aba será preenchida junto com o material <b>Qualidade dos dados</b>. Ela vai mostrar, com os números da base de treino:</p>
+  <ul><li>as linhas repetidas e as partidas idênticas por coincidência;</li><li>as partidas abandonadas (iniciadas sem resultado);</li><li>os dias com picos de acessos sem partidas;</li><li>as partidas com a mesma resposta nas 13 cartas;</li><li>o efeito de cada decisão de limpeza sobre os resultados.</li></ul>
+</section></div>
+
+<div class="aba" id="aba-graficos" hidden>
+<section><div class="eyebrow">Em preparação</div><h2>Gráficos</h2>
+  <p class="pergunta">Qual é a figura certa para cada resultado?</p>
+  <p>Esta aba será preenchida junto com o material <b>Gráficos</b>, que ensina a desenhar em Python (matplotlib) as figuras dos resultados das outras abas, no formato de artigo e de pôster.</p>
+</section></div>
+
+<div class="aba" id="aba-interpretar" hidden>
+<section><div class="eyebrow">Em preparação</div><h2>Interpretar os resultados</h2>
+  <p class="pergunta">O que os números permitem concluir, e o que não permitem?</p>
+  <p>Esta aba será preenchida junto com o material <b>Interpretar os resultados</b>: como transformar os resultados das outras abas em conclusões, separando descrição de interpretação e reconhecendo as limitações.</p>
+</section></div>
+
+</main>
+
+<footer><div class="wrap">Isso é normal? · um projeto do dotLAB · Universidade de Pernambuco (UPE) · Criação: Patricia Takako Endo &amp; Claude Opus 5.5 · Análises feitas em Python (pandas, SciPy, statsmodels, kmodes) sobre a base de treino de setembro de 2026.</div></footer>
+
+<script>
+const D = {"cartas":["aula","remedio","leve","relacao","coco","seios","xixi","diaria","ciclo","piora","vomito","humor","mae"],"gab":"rrlrrlrrlrrlr","partidas":[{"i":"fms","p":9,"r":"rrrrrrrrrrrrr"},{"i":"fms","p":9,"r":"rrlllllllrrlr"},{"i":"fms","p":11,"r":"rrlrrllrlrrll"},{"i":"upe","p":9,"r":"rrllrllrllrll"},{"i":"fms","p":13,"r":"rrlrrlrrlrrlr"},{"i":"cdia","p":5,"r":"rllllllllllll"},{"i":"fms","p":10,"r":"rrlrlrrrllrlr"},{"i":"cdia","p":8,"r":"rrlrllllllllr"},{"i":"cdia","p":6,"r":"rrrllrlrllrll"},{"i":"upe","p":13,"r":"rrlrrlrrlrrlr"},{"i":"fms","p":6,"r":"rllllllllrlrr"},{"i":"upe","p":12,"r":"rrlrrlrrlrrll"},{"i":"fms","p":9,"r":"rrlrlllllrrrr"},{"i":"upe","p":6,"r":"rlllllllllrll"},{"i":"cdia","p":2,"r":"llrlllllrllll"},{"i":"fms","p":11,"r":"rrlrrrrrlrrll"},{"i":"upe","p":10,"r":"rrllllrrllrlr"},{"i":"upe","p":8,"r":"lllrlllllrrlr"},{"i":"upe","p":8,"r":"llllrlrrllrll"},{"i":"cdia","p":10,"r":"rrrrrllrlrrll"},{"i":"upe","p":5,"r":"rllllllllllll"},{"i":"cdia","p":11,"r":"rrlrrlrllrrrr"},{"i":"fms","p":4,"r":"lllllllllllll"},{"i":"upe","p":7,"r":"rrrrlllrrlrll"},{"i":"outra","p":11,"r":"rrlrrlrrrlrlr"},{"i":"upe","p":12,"r":"rrlrrrrrlrrlr"},{"i":"fms","p":11,"r":"lrlrrrrrlrrlr"},{"i":"cdia","p":13,"r":"rrlrrlrrlrrlr"},{"i":"cdia","p":10,"r":"rrllrllrlrrll"},{"i":"upe","p":12,"r":"rrlrrlrrlrrll"},{"i":"upe","p":6,"r":"rrlllllrrllrr"},{"i":"upe","p":12,"r":"rrllrlrrlrrlr"},{"i":"upe","p":9,"r":"lrlrlllrlrllr"},{"i":"cdia","p":10,"r":"rrlrllrlrrrlr"},{"i":"outra","p":3,"r":"rlrllrlllllll"},{"i":"cdia","p":13,"r":"rrlrrlrrlrrlr"},{"i":"cdia","p":4,"r":"lllllllllllll"},{"i":"fms","p":9,"r":"rrrrlllrllrlr"},{"i":"upe","p":12,"r":"rrlrrlrrllrlr"},{"i":"fms","p":7,"r":"llllllrlllrlr"},{"i":"upe","p":11,"r":"rrrrrllrlrrlr"},{"i":"cdia","p":11,"r":"rrlrlllrlrrlr"},{"i":"upe","p":2,"r":"llrllrlllllll"},{"i":"cdia","p":13,"r":"rrlrrlrrlrrlr"},{"i":"upe","p":10,"r":"rrrrllrrllrlr"},{"i":"upe","p":11,"r":"rrlrllrllrrlr"},{"i":"fms","p":5,"r":"rlrllrlrrlrlr"},{"i":"upe","p":8,"r":"rrllrlllllrll"},{"i":"upe","p":12,"r":"rrlrrlrrlrrll"},{"i":"upe","p":9,"r":"rllrllrrllrrr"},{"i":"upe","p":11,"r":"rrlrllrrlrrll"},{"i":"upe","p":12,"r":"rrlrrlrrllrlr"},{"i":"cdia","p":11,"r":"rrrrllrrlrrlr"},{"i":"upe","p":11,"r":"rrlrllrrllrlr"},{"i":"outra","p":4,"r":"lrrlllllllrrl"},{"i":"upe","p":6,"r":"rlrrlllrllrrl"},{"i":"upe","p":10,"r":"rrlrlllllrrlr"},{"i":"fms","p":12,"r":"rrlrrrrrlrrlr"},{"i":"upe","p":10,"r":"lrrrrllrlrrlr"},{"i":"fms","p":4,"r":"rlrlllllrrlrr"},{"i":"fms","p":9,"r":"rlllllrrlrrll"},{"i":"outra","p":12,"r":"rrlrllrrlrrlr"},{"i":"fms","p":10,"r":"rrllrllrlrrll"},{"i":"upe","p":5,"r":"rlrrlrlrrlrrr"},{"i":"upe","p":4,"r":"rllllrllrrrrl"},{"i":"fms","p":3,"r":"lllllrlllllll"},{"i":"upe","p":13,"r":"rrlrrlrrlrrlr"},{"i":"fms","p":10,"r":"rllrlllrlrrlr"},{"i":"cdia","p":9,"r":"rllrlllrlrrrr"},{"i":"upe","p":12,"r":"rrlrllrrlrrlr"},{"i":"fms","p":6,"r":"rrlrlrllrlrrr"},{"i":"upe","p":13,"r":"rrlrrlrrlrrlr"},{"i":"fms","p":10,"r":"rrlrrllrllrrr"},{"i":"upe","p":10,"r":"rrlrlllrllrlr"},{"i":"cdia","p":7,"r":"lrlllrrllrrll"},{"i":"fms","p":9,"r":"rrllrllrrrrll"},{"i":"fms","p":7,"r":"rrlrlllllrlrl"},{"i":"upe","p":10,"r":"rlllrllrlrrlr"},{"i":"fms","p":6,"r":"rllllllrlllll"},{"i":"cdia","p":6,"r":"lllllllrllrll"},{"i":"upe","p":9,"r":"rllrlllrrrrlr"},{"i":"outra","p":7,"r":"lrlrllllllrll"},{"i":"outra","p":11,"r":"rrrlrlrrlrrlr"},{"i":"upe","p":7,"r":"rllllllrllrll"},{"i":"fms","p":9,"r":"rrrlrllrllrlr"},{"i":"upe","p":9,"r":"rrlllllrllrlr"},{"i":"fms","p":11,"r":"rrlrrllrllrlr"},{"i":"fms","p":8,"r":"rlllrrlrlrrll"},{"i":"fms","p":8,"r":"rrrrlllllrrll"},{"i":"upe","p":8,"r":"rrrlrllrrlrlr"},{"i":"cdia","p":12,"r":"rrlrllrrlrrlr"},{"i":"upe","p":9,"r":"rrlrlllrllllr"},{"i":"upe","p":6,"r":"rrrrlrlrrlllr"},{"i":"upe","p":11,"r":"rrlrllrrlrrll"},{"i":"fms","p":8,"r":"rrrrlrlllrrlr"},{"i":"outra","p":9,"r":"lllrrllrlrrll"},{"i":"upe","p":13,"r":"rrlrrlrrlrrlr"},{"i":"upe","p":12,"r":"rrlrrrrrlrrlr"},{"i":"upe","p":11,"r":"rrlrrlrrllllr"},{"i":"fms","p":11,"r":"rrllrlrrllrlr"},{"i":"upe","p":13,"r":"rrlrrlrrlrrlr"}],"serie":[{"data":"2026-09-01","acessos":9,"inicios":4,"resultados":4},{"data":"2026-09-02","acessos":7,"inicios":5,"resultados":5},{"data":"2026-09-03","acessos":9,"inicios":6,"resultados":6},{"data":"2026-09-04","acessos":10,"inicios":4,"resultados":2},{"data":"2026-09-05","acessos":5,"inicios":0,"resultados":0},{"data":"2026-09-06","acessos":7,"inicios":1,"resultados":1},{"data":"2026-09-07","acessos":11,"inicios":5,"resultados":5},{"data":"2026-09-08","acessos":16,"inicios":9,"resultados":7},{"data":"2026-09-09","acessos":8,"inicios":6,"resultados":5},{"data":"2026-09-10","acessos":4,"inicios":6,"resultados":5},{"data":"2026-09-11","acessos":8,"inicios":3,"resultados":3},{"data":"2026-09-12","acessos":1,"inicios":2,"resultados":1},{"data":"2026-09-13","acessos":5,"inicios":3,"resultados":3},{"data":"2026-09-14","acessos":8,"inicios":4,"resultados":3},{"data":"2026-09-15","acessos":95,"inicios":4,"resultados":3},{"data":"2026-09-16","acessos":9,"inicios":2,"resultados":2},{"data":"2026-09-17","acessos":7,"inicios":5,"resultados":4},{"data":"2026-09-18","acessos":6,"inicios":6,"resultados":6},{"data":"2026-09-19","acessos":2,"inicios":1,"resultados":1},{"data":"2026-09-20","acessos":3,"inicios":1,"resultados":1},{"data":"2026-09-21","acessos":6,"inicios":5,"resultados":6},{"data":"2026-09-22","acessos":14,"inicios":11,"resultados":8},{"data":"2026-09-23","acessos":6,"inicios":4,"resultados":3},{"data":"2026-09-24","acessos":5,"inicios":5,"resultados":5},{"data":"2026-09-25","acessos":6,"inicios":3,"resultados":3},{"data":"2026-09-26","acessos":7,"inicios":2,"resultados":2},{"data":"2026-09-27","acessos":2,"inicios":4,"resultados":5},{"data":"2026-09-28","acessos":9,"inicios":4,"resultados":4},{"data":"2026-09-29","acessos":3,"inicios":0,"resultados":0},{"data":"2026-09-30","acessos":4,"inicios":4,"resultados":2}],"funil":{"upe":[53,46,0.868],"fms":[34,30,0.882],"cdia":[22,18,0.818],"outra":[10,7,0.7]},"dif":{"aula":0.842,"remedio":0.713,"leve":0.772,"relacao":0.624,"coco":0.426,"seios":0.812,"xixi":0.426,"diaria":0.713,"ciclo":0.851,"piora":0.554,"vomito":0.822,"humor":0.851,"mae":0.624},"disc":{"aula":0.303,"remedio":0.534,"leve":0.227,"relacao":0.458,"coco":0.463,"seios":0.15,"xixi":0.55,"diaria":0.469,"ciclo":0.222,"piora":0.372,"vomito":0.472,"humor":0.18,"mae":0.315},"kr20":0.745,"kr20_sem":{"aula":0.736,"remedio":0.709,"leve":0.744,"relacao":0.718,"coco":0.717,"seios":0.751,"xixi":0.706,"diaria":0.717,"ciclo":0.743,"piora":0.729,"vomito":0.719,"humor":0.747,"mae":0.736},"kw":[3.36,0.186],"sdt":{"sens":0.638,"esp":0.822,"d_med":1.18,"d_mediana":1.29,"c_med":0.18,"c_mediana":0.12,"c_pos":0.564,"c_neg":0.436},"perfis":{"0":{"n":35,"pont":8.46,"acerto":{"aula":0.91,"remedio":0.77,"leve":0.66,"relacao":0.74,"coco":0.14,"seios":0.8,"xixi":0.14,"diaria":0.74,"ciclo":0.77,"piora":0.31,"vomito":0.86,"humor":0.77,"mae":0.83},"sens":0.61,"esp":0.75},"1":{"n":23,"pont":5.43,"acerto":{"aula":0.57,"remedio":0.17,"leve":0.78,"relacao":0.04,"coco":0.13,"seios":0.74,"xixi":0.17,"diaria":0.26,"ciclo":0.87,"piora":0.3,"vomito":0.48,"humor":0.78,"mae":0.13},"sens":0.25,"esp":0.79},"2":{"n":43,"pont":11.42,"acerto":{"aula":0.93,"remedio":0.95,"leve":0.86,"relacao":0.84,"coco":0.81,"seios":0.86,"xixi":0.79,"diaria":0.93,"ciclo":0.91,"piora":0.88,"vomito":0.98,"humor":0.95,"mae":0.72},"sens":0.87,"esp":0.9}},"mc":{"coco-aula":[46,4,4.461782054931973e-10],"coco-vomito":[41,1,1.9554136088117957e-11],"xixi-aula":[46,4,4.461782054931973e-10],"xixi-vomito":[41,1,1.9554136088117957e-11]},"grupos":{"intestinal_urinario":0.426,"dor":0.729},"glmm":{"Intercept":[1.52,0.07],"C(tipo, Treatment(\"dor\"))[T.comum]":[0.64,0.15],"C(tipo, Treatment(\"dor\"))[T.intestinal_urinario]":[-1.65,0.17],"C(tipo, Treatment(\"dor\"))[T.outro_alerta]":[-0.59,0.17],"C(inst, Treatment(\"upe\"))[T.cdia]":[-0.24,0.17],"C(inst, Treatment(\"upe\"))[T.fms]":[-0.53,0.12]},"glmm_sd":{"jog":1.15,"carta":0.38},"ic":[8.48,9.57],"media":9.03,"mediana":9.0,"dp":2.83,"n":101,"dup":4,"iguais":3,"nreg":516,"tipos":{"acesso":292,"inicio":119,"resultado":105}};
+const SIT = {aula:"Perder aula por causa da cólica",remedio:"Analgésico não resolve a dor",leve:"Cólica leve que passa com analgésico",relacao:"Dor profunda na relação sexual",coco:"Dor ao evacuar durante a menstruação",seios:"Seios doloridos e inchaço antes de menstruar",xixi:"Dor ou sangue ao urinar durante a menstruação",diaria:"Dor pélvica quase diária há meses",ciclo:"Menstruação de 5 dias a cada 28 a 32 dias",piora:"Cólica que piora com os anos",vomito:"Dor com vômito ou quase desmaio",humor:"Humor mais sensível antes de menstruar",mae:"Mãe com endometriose e cólica forte"};
+const NS="http://www.w3.org/2000/svg";
+const fmt=(x,d=2)=>Number(x).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=x=>Math.round(x*100)+"%";
+const $=id=>document.getElementById(id);
+function el(tag,attrs={},parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild);}
+function tip(e,t){el("title",{},e,t);return e;}
+const P=D.partidas, C=D.cartas, GAB=Object.fromEntries(C.map((c,i)=>[c,D.gab[i]]));
+const pts=P.map(p=>p.p);
+
+/* abas */
+const ABAS=["conhecer","perguntas","qualidade","cartas-por-dentro","graficos","interpretar"];
+function mostraAba(){const h=location.hash.replace("#","");const a=ABAS.includes(h)?h:"conhecer";
+  ABAS.forEach(n=>{$("aba-"+n).hidden=(n!==a);});
+  document.querySelectorAll("nav.abas a").forEach(l=>{if(l.dataset.aba===a)l.setAttribute("aria-current","page");else l.removeAttribute("aria-current");});}
+window.addEventListener("hashchange",()=>{mostraAba();window.scrollTo({top:document.querySelector("nav.abas").offsetTop});});
+mostraAba();
+
+/* conhecer: tipos */
+(function(){const s=$("g-tipos"),T=D.tipos,tot=D.nreg,ks=["acesso","inicio","resultado"],max=Math.max(...ks.map(k=>T[k]));
+  ks.forEach((k,i)=>{const y=12+i*44,w=T[k]/max*520;
+    el("text",{x:100,y:y+20,"text-anchor":"end",fill:"var(--fg)","font-size":15,"font-weight":700},s,k);
+    tip(el("rect",{x:112,y:y,width:w,height:28,rx:4,fill:k==="resultado"?"var(--accent)":"var(--grey)"},s),`${k}: ${T[k]} registros`);
+    el("text",{x:112+w+8,y:y+20,fill:"var(--fg)","font-size":14},s,T[k]);
+    el("text",{x:750,y:y+20,"text-anchor":"end",fill:"var(--muted)","font-size":14,"font-weight":700},s,fmt(T[k]/tot*100,1)+"%");});})();
+
+/* conhecer: ausentes */
+(function(){const cols=["tipo","data","versao","instituicao","pontuacao","total","respostas"];
+  const aus={acesso:{instituicao:292,pontuacao:292,total:292,respostas:292},inicio:{pontuacao:119,total:119,respostas:119},resultado:{}};
+  const mot={"acesso|instituicao":"O acesso é registrado quando a página abre, antes de a pessoa escolher a instituição.","acesso|pontuacao":"Um acesso não é uma partida: não há pontuação.","acesso|total":"Um acesso não é uma partida: não há total de cartas.","acesso|respostas":"Um acesso não é uma partida: não há respostas.","inicio|pontuacao":"A partida começou, mas a pontuação só existe quando ela termina.","inicio|total":"O total só é gravado no resultado.","inicio|respostas":"As respostas só são enviadas no fim da partida, no evento resultado."};
+  const t=$("t-aus");
+  t.innerHTML=`<thead><tr><th>tipo</th>${cols.map(c=>`<th><code>${c}</code></th>`).join("")}</tr></thead><tbody>${["acesso","inicio","resultado"].map(k=>`<tr><th>${k}</th>${cols.map(c=>{const v=aus[k][c]||0;return v?`<td class="aus" tabindex="0" data-k="${k}|${c}" style="background:color-mix(in srgb, var(--accent) 22%, transparent)">${v}</td>`:`<td>0</td>`;}).join("")}</tr>`).join("")}</tbody>`;
+  t.querySelectorAll("td.aus").forEach(td=>{const f=()=>{const [k,c]=td.dataset.k.split("|");$("aus-motivo").innerHTML=`<b>${k} · ${c}:</b> ${mot[td.dataset.k]}`;};td.addEventListener("click",f);td.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f();}});});})();
+
+/* conhecer: instituições */
+(function(){const s=$("g-inst"),V=[["(ausente)",292],["upe",102],["fms",64],["cdia",41],["outra",17]],max=292;
+  V.forEach(([k,v],i)=>{const y=8+i*38,w=v/max*190;
+    el("text",{x:92,y:y+18,"text-anchor":"end",fill:"var(--fg)","font-size":14,"font-weight":k==="(ausente)"?400:700},s,k);
+    tip(el("rect",{x:102,y:y,width:w,height:26,rx:4,fill:k==="(ausente)"?"var(--grey)":"var(--accent)","fill-opacity":k==="(ausente)"?.6:1},s),`${k}: ${v}`);
+    el("text",{x:102+w+6,y:y+18,fill:"var(--fg)","font-size":13},s,v);});})();
+
+/* conhecer: antes e depois */
+(function(){const r=(P.find(p=>p.r.includes("l")&&p.r.includes("r"))||P[0]).r, obj=Object.fromEntries(C.map((c,i)=>[c,r[i]]));
+  $("antes").textContent='"respostas": {\n'+C.map(c=>`  "${c}": "${obj[c]}"`).join(",\n")+"\n}";
+  $("depois").innerHTML=`<thead><tr><th>coluna</th><th>valor</th></tr></thead><tbody>${C.map(c=>`<tr><td><code>${c}</code></td><td>${obj[c]}</td></tr>`).join("")}</tbody>`;})();
+
+/* base */
+(function(){
+  const k=[[D.nreg,"registros na base"],[D.tipos.inicio,"partidas iniciadas"],[D.n,"partidas concluídas e válidas"],["1 a 30/09","período (2026)"]];
+  $("kpis").innerHTML=k.map(([v,t])=>`<div class="kpi"><b>${typeof v==="number"?v.toLocaleString("pt-BR"):v}</b><span>${t}</span></div>`).join("");
+  $("t-dup").textContent=D.dup; $("t-iguais").textContent=D.iguais;
+})();
+
+/* funil */
+(function(){
+  const s=$("g-funil"), ins=Object.keys(D.funil), max=Math.max(...ins.map(i=>D.funil[i][0]));
+  const x0=110,w=480,h=18;
+  ins.forEach((i,k)=>{const [ini,con,t]=D.funil[i];const y=20+k*46;
+    el("text",{x:x0-12,y:y+h+4,"text-anchor":"end",fill:"var(--fg)","font-size":15,"font-weight":700},s,i);
+    tip(el("rect",{x:x0,y:y,width:ini/max*w,height:h,rx:4,fill:"var(--grey)","fill-opacity":.55},s),`${i}: ${ini} iniciadas`);
+    tip(el("rect",{x:x0,y:y+h+2,width:con/max*w,height:h,rx:4,fill:"var(--fg)"},s),`${i}: ${con} concluídas`);
+    el("text",{x:x0+ini/max*w+8,y:y+14,fill:"var(--muted)","font-size":13},s,`${ini}`);
+    el("text",{x:x0+con/max*w+8,y:y+h+16,fill:"var(--fg)","font-size":13},s,`${con}`);
+    el("text",{x:740,y:y+h+4,"text-anchor":"end",fill:"var(--accent)","font-size":18,"font-weight":700},s,pct(t));
+  });
+  $("t-taxa").textContent=pct(D.tipos.inicio?D.n/D.tipos.inicio:0)+` (${D.n} de ${D.tipos.inicio})`;
+})();
+
+/* série temporal */
+function serie(){
+  const s=$("g-serie"); clear(s);
+  const esc=$("esconde15").checked; const S=D.serie;
+  const L=50,R=740,T=20,B=240;
+  const vis=S.filter(d=>!(esc&&d.data==="2026-09-15"));
+  const ymax=Math.max(...vis.map(d=>d.acessos))*1.1;
+  const x=i=>L+i*(R-L)/(S.length-1), y=v=>B-v/ymax*(B-T);
+  const passo=ymax>60?20:5;
+  for(let v=0;v<=ymax;v+=passo){el("line",{x1:L,x2:R,y1:y(v),y2:y(v),stroke:"var(--line)"},s);el("text",{x:L-8,y:y(v)+4,"text-anchor":"end",fill:"var(--muted)","font-size":12},s,v);}
+  S.forEach((d,i)=>{if(i%7===0)el("text",{x:x(i),y:B+20,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,d.data.slice(8,10)+"/09");});
+  const linha=(k,cor,lw)=>{let dpath="",pen=false;S.forEach((d,i)=>{const oculto=esc&&d.data==="2026-09-15";if(oculto){pen=false;return;}dpath+=(pen?"L":"M")+x(i)+","+y(d[k]);pen=true;});el("path",{d:dpath,fill:"none",stroke:cor,"stroke-width":lw,"stroke-linejoin":"round"},s);};
+  linha("acessos","var(--grey)",2); linha("resultados","var(--fg)",2.5);
+  S.forEach((d,i)=>{if(esc&&d.data==="2026-09-15")return;
+    tip(el("circle",{cx:x(i),cy:y(d.acessos),r:4,fill:"var(--grey)"},s),`${d.data.slice(8,10)}/09: ${d.acessos} acessos`);
+    tip(el("circle",{cx:x(i),cy:y(d.resultados),r:4,fill:"var(--fg)"},s),`${d.data.slice(8,10)}/09: ${d.resultados} partidas concluídas`);});
+  [["2026-09-08","acessos e partidas"],["2026-09-22","acessos e partidas"],["2026-09-15","só acessos"]].forEach(([dt,t])=>{
+    const i=S.findIndex(d=>d.data===dt); if(esc&&dt==="2026-09-15"){el("text",{x:x(i),y:T+10,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,"15/09 oculto");return;}
+    const v=S[i].acessos, yy=Math.max(y(v)-12,T+4);
+    el("text",{x:x(i),y:yy,"text-anchor":"middle",fill:dt==="2026-09-15"?"var(--accent)":"var(--fg)","font-size":12,"font-weight":700},s,t);});
+}
+$("esconde15").addEventListener("change",serie); serie();
+
+/* histograma */
+(function(){
+  const s=$("g-hist"), cont=Array(14).fill(0); pts.forEach(v=>cont[v]++);
+  const L=40,R=740,B=220,T=20, bw=(R-L)/14, ymax=Math.max(...cont)*1.15, y=v=>B-v/ymax*(B-T);
+  cont.forEach((c,v)=>{tip(el("rect",{x:L+v*bw+3,y:y(c),width:bw-6,height:B-y(c),rx:3,fill:"var(--mark)"},s),`${v} pontos: ${c} partidas`);
+    if(c)el("text",{x:L+v*bw+bw/2,y:y(c)-6,"text-anchor":"middle",fill:"var(--fg)","font-size":12},s,c);
+    el("text",{x:L+v*bw+bw/2,y:B+18,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,v);});
+  el("line",{x1:L,x2:R,y1:B,y2:B,stroke:"var(--fg)"},s);
+  const xm=v=>L+(v+.5)*bw;
+  el("line",{x1:xm(D.media),x2:xm(D.media),y1:T,y2:B,stroke:"var(--accent)","stroke-width":2,"stroke-dasharray":"5 4"},s);
+  el("text",{x:xm(D.media)-6,y:T+6,"text-anchor":"end",fill:"var(--accent)","font-size":13,"font-weight":700},s,`média ${fmt(D.media)}`);
+  el("line",{x1:xm(D.mediana),x2:xm(D.mediana),y1:T,y2:B,stroke:"var(--fg)","stroke-width":2},s);
+  el("text",{x:xm(D.mediana)+6,y:T+6,fill:"var(--fg)","font-size":13,"font-weight":700},s,`mediana ${fmt(D.mediana,0)}`);
+  el("text",{x:(L+R)/2,y:B+36,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,"pontuação (acertos em 13 cartas)");
+  $("t-media").textContent=fmt(D.media); $("t-mediana").textContent=fmt(D.mediana,0); $("t-dp").textContent=fmt(D.dp);
+})();
+
+/* bootstrap */
+let medias=[];
+function sorteia(n){for(let k=0;k<n;k++){let s=0;for(let j=0;j<pts.length;j++)s+=pts[Math.floor(Math.random()*pts.length)];medias.push(s/pts.length);}desenhaBoot();}
+function quantil(a,q){const b=[...a].sort((x,y)=>x-y);const i=(b.length-1)*q,lo=Math.floor(i),hi=Math.ceil(i);return b[lo]+(b[hi]-b[lo])*(i-lo);}
+function desenhaBoot(){
+  const s=$("g-boot"); clear(s);
+  const lo=7.6,hi=10.4,nb=28,bw=(hi-lo)/nb, L=40,R=740,B=200,T=20;
+  const cont=Array(nb).fill(0); medias.forEach(m=>{const i=Math.min(nb-1,Math.max(0,Math.floor((m-lo)/bw)));cont[i]++;});
+  const ymax=Math.max(5,...cont)*1.12, x=v=>L+(v-lo)/(hi-lo)*(R-L), y=v=>B-v/ymax*(B-T);
+  cont.forEach((c,i)=>{if(c)tip(el("rect",{x:x(lo+i*bw)+1,y:y(c),width:(R-L)/nb-2,height:B-y(c),fill:"var(--grey)"},s),`médias entre ${fmt(lo+i*bw)} e ${fmt(lo+(i+1)*bw)}: ${c}`);});
+  el("line",{x1:L,x2:R,y1:B,y2:B,stroke:"var(--fg)"},s);
+  for(let v=8;v<=10;v+=0.5)el("text",{x:x(v),y:B+18,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,fmt(v,1));
+  el("line",{x1:x(D.media),x2:x(D.media),y1:T,y2:B,stroke:"var(--fg)","stroke-width":2},s);
+  el("text",{x:x(D.media),y:T-4,"text-anchor":"middle",fill:"var(--fg)","font-size":12,"font-weight":700},s,`média da base ${fmt(D.media)}`);
+  let st=`${medias.length.toLocaleString("pt-BR")} amostras sorteadas.`;
+  if(medias.length){const ult=medias[medias.length-1]; st+=` Última média: ${fmt(ult)}.`;
+    tip(el("circle",{cx:x(ult),cy:B-6,r:6,fill:"var(--mark)",stroke:"var(--fg)"},s),`última média: ${fmt(ult)}`);}
+  if(medias.length>=200){const a=quantil(medias,.025),b=quantil(medias,.975);
+    [a,b].forEach(v=>el("line",{x1:x(v),x2:x(v),y1:T+10,y2:B,stroke:"var(--accent)","stroke-width":2.5,"stroke-dasharray":"6 4"},s));
+    el("text",{x:x(b)+8,y:T+24,fill:"var(--accent)","font-size":13,"font-weight":700},s,`IC 95%: ${fmt(a)} a ${fmt(b)}`);
+    st+=` Intervalo de 95%: ${fmt(a)} a ${fmt(b)}.`;}
+  else st+=" O intervalo aparece a partir de 200 sorteios.";
+  $("bs-status").textContent=st;
+}
+$("bs1").onclick=()=>sorteia(1);$("bs100").onclick=()=>sorteia(100);$("bs10k").onclick=()=>sorteia(10000);$("bs0").onclick=()=>{medias=[];desenhaBoot();};
+$("t-ic").textContent=`média ${fmt(D.media)}, IC 95% de ${fmt(D.ic[0])} a ${fmt(D.ic[1])}`;
+desenhaBoot();
+
+/* instituições */
+const INS=["upe","fms","cdia"], G=Object.fromEntries(INS.map(i=>[i,P.filter(p=>p.i===i).map(p=>p.p)]));
+const mediana=a=>{const b=[...a].sort((x,y)=>x-y),m=b.length/2;return b.length%2?b[Math.floor(m)]:(b[m-1]+b[m])/2;};
+(function(){
+  const s=$("g-strip"), L=80,R=740,T=20,B=210, x=v=>L+v/13*(R-L);
+  for(let v=0;v<=13;v++){el("line",{x1:x(v),x2:x(v),y1:T,y2:B,stroke:"var(--line)"},s);el("text",{x:x(v),y:B+18,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,v);}
+  INS.forEach((i,k)=>{const yc=T+30+k*65; el("text",{x:L-14,y:yc+2,"text-anchor":"end",fill:"var(--fg)","font-size":15,"font-weight":700},s,i);
+    const usados={}; G[i].forEach(v=>{usados[v]=(usados[v]||0)+1;const n=usados[v];const dy=((n%2)?1:-1)*Math.ceil((n-1)/2)*5;
+      tip(el("circle",{cx:x(v)+((n*37)%7-3),cy:yc+dy,r:4,fill:"var(--accent)","fill-opacity":.55},s),`${i}: ${v} pontos`);});
+    const m=mediana(G[i]); el("line",{x1:x(m),x2:x(m),y1:yc-24,y2:yc+24,stroke:"var(--fg)","stroke-width":3},s);
+    el("text",{x:L-14,y:yc+22,"text-anchor":"end",fill:"var(--muted)","font-size":11},s,`${G[i].length} partidas`);});
+  $("t-kw").textContent=fmt(D.kw[1],2);
+})();
+function Phi(z){const t=1/(1+0.2316419*Math.abs(z)),d=0.3989423*Math.exp(-z*z/2);const p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p;}
+function mw(a,b){let gt=0,lt=0,eq=0;a.forEach(u=>b.forEach(v=>{if(u>v)gt++;else if(u<v)lt++;else eq++;}));
+  const n1=a.length,n2=b.length,N=n1+n2,U=gt+eq/2,mu=n1*n2/2;
+  const all=[...a,...b],cnt={};all.forEach(v=>cnt[v]=(cnt[v]||0)+1);const tie=Object.values(cnt).reduce((s,t)=>s+t*t*t-t,0);
+  const sd=Math.sqrt(n1*n2/12*((N+1)-tie/(N*(N-1))));const z=(Math.abs(U-mu)-0.5)/sd;
+  return {gt,lt,eq,tot:n1*n2,r:2*U/(n1*n2)-1,p:2*(1-Phi(z))};}
+let parAc={g:0,l:0,e:0};
+function desenhaPar(){
+  const a=$("parA").value,b=$("parB").value, s=$("g-par"); clear(s);
+  if(a===b){$("mw-r").textContent="—";$("mw-p").textContent="Escolha duas instituições diferentes.";return;}
+  const m=mw(G[a],G[b]);
+  $("mw-r").textContent=(m.r>=0?"+":"")+fmt(m.r);
+  $("mw-p").textContent=`Mann-Whitney ${a} × ${b}: valor-p = ${fmt(m.p,3)}`;
+  const W=340,x0=10, pg=m.gt/m.tot, pe=m.eq/m.tot, pl=m.lt/m.tot;
+  [[pg,"var(--accent)",`${a} maior`],[pe,"var(--grey)","empate"],[pl,"var(--fg)",`${b} maior`]].reduce((xx,[p,c,t])=>{
+    tip(el("rect",{x:xx,y:20,width:p*W,height:34,fill:c},s),`${t}: ${pct(p)} dos pares`);
+    return xx+p*W;},x0);
+  el("text",{x:x0,y:76,fill:"var(--fg)","font-size":12},s,`${a} maior ${pct(pg)} · empate ${pct(pe)} · ${b} maior ${pct(pl)}`);
+  el("text",{x:x0,y:100,fill:"var(--muted)","font-size":12},s,`r = ${pct(pg)} − ${pct(pl)} (todos os ${m.tot.toLocaleString("pt-BR")} pares)`);
+}
+function sorteiaPar(){const a=$("parA").value,b=$("parB").value;if(a===b)return;
+  const u=G[a][Math.floor(Math.random()*G[a].length)],v=G[b][Math.floor(Math.random()*G[b].length)];
+  if(u>v)parAc.g++;else if(u<v)parAc.l++;else parAc.e++;const n=parAc.g+parAc.l+parAc.e;
+  $("par-status").textContent=`Sorteio: ${a} fez ${u}, ${b} fez ${v}. Em ${n} sorteios: ${a} ganhou ${parAc.g}, empatou ${parAc.e}, perdeu ${parAc.l}. Diferença entre vitórias e derrotas: ${fmt((parAc.g-parAc.l)/n)}.`;}
+["parA","parB"].forEach((id,k)=>{const sel=$(id);INS.forEach(i=>{const o=document.createElement("option");o.value=i;o.textContent=i;sel.appendChild(o);});sel.value=INS[k];sel.addEventListener("change",()=>{parAc={g:0,l:0,e:0};$("par-status").textContent="Clique em “Sortear um par” para ver de onde vem o r.";desenhaPar();});});
+$("sorteiaPar").onclick=sorteiaPar; desenhaPar();
+
+/* amostra */
+function invNorm(p){const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239],b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155288572],c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783],d=[0.007784695709041462,0.3224671290700398,2.445134137142996,3.754408661907416];
+  const pl=0.02425;let q,r;if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+  if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+  q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+function amostra(){const dp=+$("s-dp").value,dif=+$("s-dif").value,pod=+$("s-pod").value,al=+$("s-alfa").value;
+  $("o-dp").textContent=fmt(dp,1);$("o-dif").textContent=fmt(dif);$("o-pod").textContent=pct(pod);$("o-alfa").textContent=pct(al);
+  const za=invNorm(1-al/2),zb=invNorm(pod);const n=Math.ceil(2*(za+zb)**2*dp**2/dif**2);
+  $("n-res").textContent=n.toLocaleString("pt-BR");$("n-np").textContent=Math.ceil(n/0.864).toLocaleString("pt-BR");
+  $("n-comp").textContent=`z para ${pct(al)} de significância = ${fmt(za)}; z para ${pct(pod)} de poder = ${fmt(zb)}. Na base de treino, a upe tem ${G.upe.length} partidas, a fms ${G.fms.length} e a cdia ${G.cdia.length}.`;}
+["s-dp","s-dif","s-pod","s-alfa"].forEach(id=>$(id).addEventListener("input",amostra)); amostra();
+
+/* cartas */
+function cartas(){
+  const s=$("g-cartas"); clear(s); const ord=$("ordemCartas").value;
+  let L=[...C]; if(ord==="dif")L.sort((a,b)=>D.dif[a]-D.dif[b]); if(ord==="disc")L.sort((a,b)=>D.disc[a]-D.disc[b]);
+  const x0=300,w=330,rh=36,T=24;
+  el("text",{x:x0,y:14,fill:"var(--muted)","font-size":12},s,"acerto");
+  el("text",{x:745,y:14,"text-anchor":"end",fill:"var(--muted)","font-size":12},s,"discriminação");
+  [0.2,0.3].forEach(v=>{});
+  L.forEach((c,k)=>{const y=T+k*rh, al=GAB[c]==="r", d=D.dif[c], di=D.disc[c];
+    el("text",{x:0,y:y+15,fill:"var(--fg)","font-size":13,"font-weight":700},s,c);
+    el("text",{x:0,y:y+30,fill:"var(--muted)","font-size":11},s,SIT[c].length>44?SIT[c].slice(0,43)+"…":SIT[c]);
+    el("rect",{x:x0,y:y+6,width:w,height:18,rx:4,fill:"var(--line)"},s);
+    tip(el("rect",{x:x0,y:y+6,width:d*w,height:18,rx:4,fill:al?"var(--accent)":"var(--verde)"},s),`${c}: ${pct(d)} de acerto (${al?"alerta":"comum"})`);
+    el("text",{x:x0+d*w-6,y:y+19,"text-anchor":"end",fill:"var(--bg)","font-size":12,"font-weight":700},s,pct(d));
+    tip(el("text",{x:745,y:y+20,"text-anchor":"end",fill:di<0.2?"var(--accent)":"var(--fg)","font-size":14,"font-weight":700},s,fmt(di)),`${c}: discriminação ${fmt(di)}${di<0.2?" (baixa)":""}`);
+  });
+  $("t-kr").textContent=fmt(D.kr20);
+}
+$("ordemCartas").addEventListener("change",cartas); cartas();
+
+/* SDT */
+const ALERT=C.filter(c=>GAB[c]==="r"), COM=C.filter(c=>GAB[c]==="l");
+function sdtJog(p){const r=Object.fromEntries(C.map((c,i)=>[c,p.r[i]]));
+  const H=ALERT.filter(c=>r[c]==="r").length/9, F=COM.filter(c=>r[c]==="r").length/4;
+  const aj=(x,n)=>Math.min(1-1/(2*n),Math.max(1/(2*n),x)); const zh=invNorm(aj(H,9)),zf=invNorm(aj(F,4));
+  return {H,F,d:zh-zf,c:-(zh+zf)/2,r};}
+(function(){
+  const s=$("g-sdt"), L=60,R=740,T=20,B=330, J=P.map(sdtJog);
+  const xmin=Math.floor(Math.min(...J.map(j=>j.d))), xmax=Math.ceil(Math.max(...J.map(j=>j.d))), ymx=Math.ceil(Math.max(...J.map(j=>Math.abs(j.c)))*2)/2;
+  const x=v=>L+(v-xmin)/(xmax-xmin)*(R-L-20), y=v=>T+(ymx-v)/(2*ymx)*(B-T);
+  el("rect",{x:L,y:T,width:R-L,height:y(0)-T,fill:"var(--mark)","fill-opacity":.09},s);
+  for(let v=xmin;v<=xmax;v++){el("line",{x1:x(v),x2:x(v),y1:T,y2:B,stroke:"var(--line)"},s);el("text",{x:x(v),y:B+18,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,v);}
+  for(let v=-ymx;v<=ymx+1e-9;v+=0.5){el("text",{x:L-8,y:y(v)+4,"text-anchor":"end",fill:"var(--muted)","font-size":12},s,fmt(v,1));}
+  el("line",{x1:L,x2:R,y1:y(0),y2:y(0),stroke:"var(--fg)","stroke-width":1.2},s);
+  el("text",{x:R-6,y:T+16,"text-anchor":"end",fill:"var(--fg)","font-size":13,"font-weight":700},s,"tende a normalizar (c > 0)");
+  el("text",{x:R-6,y:B-8,"text-anchor":"end",fill:"var(--fg)","font-size":13,"font-weight":700},s,"tende a alarmar (c < 0)");
+  el("text",{x:(L+R)/2,y:B+38,"text-anchor":"middle",fill:"var(--muted)","font-size":12},s,"d′: capacidade de distinguir alerta de comum →");
+  el("text",{x:16,y:(T+B)/2,"text-anchor":"middle",fill:"var(--muted)","font-size":12,transform:`rotate(-90 16 ${(T+B)/2})`},s,"critério c");
+  const vist={};
+  J.forEach((j,k)=>{const key=fmt(j.d,2)+"|"+fmt(j.c,2);vist[key]=(vist[key]||0)+1;const n=vist[key]-1;
+    const cx=x(j.d)+(n%4)*5-7, cy=y(j.c)+Math.floor(n/4)*5;
+    const pt=el("circle",{cx,cy,r:5.5,fill:"var(--accent)","fill-opacity":.6,stroke:"var(--bg)","stroke-width":1,tabindex:0,role:"button","aria-label":`jogadora ${k+1}`,style:"cursor:pointer"},s);
+    tip(pt,`jogadora ${k+1} · ${P[k].i} · d′ ${fmt(j.d)} · c ${fmt(j.c)} · ${P[k].p} pontos`);
+    const mostra=()=>{s.querySelectorAll("circle.sel").forEach(e=>{e.classList.remove("sel");e.setAttribute("stroke","var(--bg)");e.setAttribute("stroke-width",1);});
+      pt.classList.add("sel");pt.setAttribute("stroke","var(--fg)");pt.setAttribute("stroke-width",3);
+      $("jogadora").innerHTML=`<p style="margin:.8rem 0 .2rem"><b>Jogadora ${k+1}</b> (${P[k].i}) · ${P[k].p} pontos · sensibilidade ${pct(j.H)} · especificidade ${pct(1-j.F)} · d′ ${fmt(j.d)} · c ${fmt(j.c)}</p><div class="respostas">${C.map(c=>{const ok=j.r[c]===GAB[c];return `<div class="${ok?"ok":"erro"}"><span class="chip ${GAB[c]==="r"?"alerta":"comum"}">${GAB[c]==="r"?"alerta":"comum"}</span> <i>${c}</i><br>${j.r[c]==="r"?"Vale investigar":"É comum"} ${ok?"✓":"✗"}</div>`;}).join("")}</div>`;};
+    pt.addEventListener("click",mostra); pt.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();mostra();}});
+  });
+  $("t-sens").textContent=pct(D.sdt.sens);$("t-esp").textContent=pct(D.sdt.esp);$("t-c").textContent=fmt(D.sdt.c_med);
+})();
+
+/* pareadas */
+function mc(){const a=$("mcA").value,b=$("mcB").value; const n=[[0,0],[0,0]];
+  P.forEach(p=>{const r=Object.fromEntries(C.map((c,i)=>[c,p.r[i]]));n[r[a]===GAB[a]?1:0][r[b]===GAB[b]?1:0]++;});
+  $("t-mc").innerHTML=`<thead><tr><th></th><th>errou ${b}</th><th>acertou ${b}</th></tr></thead><tbody><tr><th>errou ${a}</th><td>${n[0][0]}</td><td><b>${n[0][1]}</b></td></tr><tr><th>acertou ${a}</th><td><b>${n[1][0]}</b></td><td>${n[1][1]}</td></tr></tbody>`;
+  const key=`${a}-${b}`, pv=D.mc[key]?D.mc[key][2]:null;
+  $("mc-leia").textContent=`${n[0][1]} jogadoras acertaram ${b} e erraram ${a}; só ${n[1][0]} fizeram o contrário. O McNemar compara esses dois números: valor-p ${pv!==null?(pv<0.001?"< 0,001":fmt(pv,3)):"—"}. As jogadoras que acertaram ou erraram as duas não entram na conta.`;}
+["mcA","mcB"].forEach(id=>$(id).addEventListener("change",mc)); mc();
+$("t-gi").textContent=pct(D.grupos.intestinal_urinario);$("t-gd").textContent=pct(D.grupos.dor);
+
+/* perfis */
+(function(){
+  const s=$("g-perfis"), ks=Object.keys(D.perfis).sort((a,b)=>D.perfis[a].pont-D.perfis[b].pont);
+  const nome={0:"",1:"",2:""}; const L=170,cw=(740-L)/13,T=34,rh=52;
+  C.forEach((c,j)=>el("text",{x:L+j*cw+cw/2,y:22,"text-anchor":"middle",fill:GAB[c]==="r"?"var(--accent)":"var(--verde)","font-size":11,"font-weight":700},s,c));
+  const rot=["Perfil A","Perfil B","Perfil C"];
+  ks.forEach((k,i)=>{const pf=D.perfis[k], y=T+i*rh;
+    el("text",{x:0,y:y+20,fill:"var(--fg)","font-size":14,"font-weight":700},s,rot[i]);
+    el("text",{x:0,y:y+38,fill:"var(--muted)","font-size":12},s,`${pf.n} jogadoras · ${fmt(pf.pont,1)} pontos`);
+    C.forEach((c,j)=>{const v=pf.acerto[c];
+      tip(el("rect",{x:L+j*cw+2,y:y+4,width:cw-4,height:rh-8,rx:4,fill:"var(--fg)","fill-opacity":(0.08+0.82*v).toFixed(2)},s),`${rot[i]} · ${c}: ${pct(v)} de acerto`);
+      el("text",{x:L+j*cw+cw/2,y:y+rh/2+4,"text-anchor":"middle",fill:v>0.55?"var(--bg)":"var(--fg)","font-size":11},s,pct(v));});});
+  const [a,b,c]=ks.map(k=>D.perfis[k]);
+  $("perfis-txt").innerHTML=`<p><b>Perfil A</b> (${a.n} jogadoras): acerta pouco os sinais de alerta (sensibilidade ${pct(a.sens)}), mas acerta as situações comuns. Tende a achar tudo normal.</p><p><b>Perfil B</b> (${b.n}): reconhece a dor menstrual, mas normaliza os sintomas intestinais e urinários (${pct(b.acerto.coco)} de acerto no intestino e ${pct(b.acerto.xixi)} na urina).</p><p><b>Perfil C</b> (${c.n}): reconhece quase todos os sinais (sensibilidade ${pct(c.sens)}, especificidade ${pct(c.esp)}).</p>`;
+})();
+</script>
+
+</body>
+</html>
